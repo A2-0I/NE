@@ -1,0 +1,43 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI 프로세스 VIP</title><link rel="stylesheet" href="../shared/vip.css?v=20260923-1"></head><body>
+<div class="vip-shell"><aside class="vip-side"><div class="vip-brand">AI 프로세스 VIP<small>PRIVATE COMMUNITY</small></div><nav class="vip-nav"><a class="active" href="index.html">홈</a><a class="" href="chat.html">VIP 단체채팅</a><a class="" href="events.html">이벤트</a><a class="" href="support.html">1:1 상담<span id="navBadgeSupport" class="badge hidden"></span></a><a class="" href="profile.html">프로필 / 알림</a><a href="../user/dashboard.html">AI 프로세스</a></nav></aside><main class="vip-main">
+<div class="vip-top"><div><h1>AI 프로세스 VIP</h1><p>채팅 · 이벤트 · 1:1 상담을 한 곳에서 이용합니다.</p></div><div class="vip-actions"><button id="btnNotify" class="vip-btn">🔔 알림 허용</button><a class="vip-btn" href="profile.html">프로필 설정</a></div></div>
+<div id="notice" class="notice-bar hidden"></div>
+<section class="vip-grid">
+<div class="vip-card vip-stat"><span>진행중 AI 프로세스</span><strong id="statProcess">0건</strong></div>
+<div class="vip-card vip-stat"><span>진행중 이벤트</span><strong id="statEvents">0건</strong></div>
+<div class="vip-card vip-stat"><span>읽지 않은 1:1 답변</span><strong id="statSupport">0건</strong></div>
+</section>
+<section class="vip-card vip-section"><div class="vip-section-head"><h2>내 VIP 프로필</h2><a href="profile.html"><small>수정하기 →</small></a></div><div id="profileBox"></div></section>
+<section class="vip-card vip-section"><div class="vip-section-head"><h2>현재 진행중 AI 프로세스</h2><a href="../user/dashboard.html"><small>전체 보기 →</small></a></div><div id="processList" class="vip-list"></div></section>
+<section class="vip-event-grid" style="margin-top:12px">
+<a class="vip-card vip-section" href="chat.html"><div class="vip-section-head"><h2>VIP 단체채팅</h2><span class="vip-pill">실시간</span></div><p style="font-size:12px;color:#6b7280;margin:0">일반 단체 메시지는 푸시 알림 없이 편하게 확인합니다.</p></a>
+<a class="vip-card vip-section" href="support.html"><div class="vip-section-head"><h2>1:1 상담</h2><span class="vip-pill">알림</span></div><p style="font-size:12px;color:#6b7280;margin:0">관리자 답변이 오면 브라우저 알림으로 알려드립니다.</p></a>
+</section>
+</main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../shared/config.js?v=20260923-1"></script>
+<script src="../shared/sb.js?v=20260923-1"></script>
+<script src="../shared/app.js?v=20260923-1"></script>
+<script src="../shared/vip-push-config.js?v=20260923-1"></script>
+<script src="../shared/vip.js?v=20260923-1"></script>
+<script src="../shared/vip-notify.js?v=20260923-1"></script>
+
+<script>
+(async()=>{
+ const user=AIVIP.requireUser();if(!user)return;const sb=AIVIP.sb();
+ try{
+  const profile=await AIVIP.ensureProfile(user);
+  document.getElementById('profileBox').innerHTML=`<div class="vip-person">${AIVIP.avatar(profile)}<div class="vip-person-text"><strong>${AIVIP.escape(profile.nickname)}</strong><small>${profile.group_kicked?'단체채팅 강퇴 상태':'VIP 회원 · 알림 설정 가능'}</small></div></div>`;
+  const [inv,ev,th]=await Promise.all([
+   sb.from('app_investments').select('id,display_name,processor_code,started_at,amount').eq('user_id',user.id).eq('status','진행중').order('started_at',{ascending:true}),
+   sb.from('vip_events').select('id').eq('status','진행중'),
+   sb.from('vip_support_threads').select('unread_user').eq('user_id',user.id).maybeSingle()
+  ]);
+  const investments=inv.data||[];document.getElementById('statProcess').textContent=investments.length+'건';document.getElementById('statEvents').textContent=(ev.data||[]).length+'건';
+  const unread=th.data?.unread_user||0;document.getElementById('statSupport').textContent=unread+'건';
+  if(unread>0){const b=document.getElementById('navBadgeSupport');b.textContent=unread;b.classList.remove('hidden')}
+  document.getElementById('processList').innerHTML=investments.length?investments.map(i=>`<div class="vip-row"><div class="vip-row-main"><strong>${AIVIP.escape(i.display_name||'AI 프로세스 진행 현황')}</strong><small>${AIVIP.time(i.started_at)} 시작 · ${AIVIP.money(i.amount)}</small></div><span class="vip-pill">진행중</span></div>`).join(''):'<div class="vip-empty">현재 진행중인 AI 프로세스가 없습니다.</div>';
+ }catch(e){console.error(e);const n=document.getElementById('notice');n.textContent='VIP 초기 설정 SQL을 먼저 실행해주세요. · '+(e.message||e);n.classList.remove('hidden')}
+})();
+document.getElementById('btnNotify').onclick=async()=>{const p=await AIVIPNotify.requestPermission();alert(p==='granted'?'알림이 허용되었습니다.':'브라우저 알림 권한을 확인해주세요.')};
+</script></body></html>

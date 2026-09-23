@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI 프로세스 ADMIN - 자동지급 설정</title>
+  <link rel="stylesheet" href="../shared/theme.css?v=20260814-1408" />
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;background:#0b1220;color:#e5eefb;font-family:system-ui,-apple-system,sans-serif}
+    .wrap{max-width:980px;margin:24px auto;padding:0 14px}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+    .title{font-weight:800;letter-spacing:.06em}
+    .card{background:#0f172a;border:1px solid rgba(255,255,255,.10);border-radius:16px;box-shadow:0 18px 50px rgba(0,0,0,.30);padding:16px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .row-col{display:flex;flex-direction:column;gap:6px}
+    label{font-size:12px;color:#9fb3ce}
+    input,select{width:100%;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:#0b1220;color:#e5eefb}
+    button{padding:10px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:#0b1220;color:#e5eefb;cursor:pointer}
+    button.primary{background:linear-gradient(135deg,#60a5fa,#3b82f6);border:none;color:#06111c;font-weight:800}
+    .muted{color:#9fb3ce;font-size:13px;line-height:1.5}
+    .err{color:#ef4444;font-size:13px;min-height:18px;margin-top:10px;white-space:pre-line}
+    .ok{color:#22c55e;font-size:13px;min-height:18px;margin-top:10px;white-space:pre-line}
+    .pill{display:inline-block;padding:3px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);font-size:12px;color:#9fb3ce}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  </style>
+
+<style>
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css');
+body{font-family:"Pretendard Variable","Pretendard","Noto Sans KR",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;letter-spacing:-.015em!important}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="title">AI 프로세스 ADMIN · <span class="pill">자동지급 설정</span></div>
+      <div class="row">
+        <button type="button" id="btnGoMembers">회원 & 투자 관리</button>
+        <button type="button" id="btnGoProfit">실현수익 증감</button>
+        <button type="button" id="btnLogout">로그아웃</button>
+      </div>
+    </div>
+
+    <div class="card muted" style="margin-bottom:14px">
+      <b>이 설정은 진행기간이 "미정"인 회원에게만 적용됩니다.</b><br/>
+      1시간~90일의 기간형 진행은 이 설정과 별도로 3분 간격 · 수익 85% / 손실 15% · 목표수익 추종 방식으로 진행됩니다.<br/>
+      수동지급은 그대로 유지됩니다.
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="row-col">
+          <label for="enabled">자동지급 ON/OFF</label>
+          <select id="enabled"><option value="true">ON</option><option value="false">OFF</option></select>
+        </div>
+
+        <div class="grid" style="margin-top:12px">
+          <div class="row-col"><label for="every_minutes">지급 간격 (분)</label><input id="every_minutes" type="number" min="1" /></div>
+          <div class="row-col"><label for="max_single_payout">1회 최대 지급액</label><input id="max_single_payout" type="number" min="0" /></div>
+        </div>
+
+        <div class="grid" style="margin-top:12px">
+          <div class="row-col"><label for="start_hour">시작 시간 (0~23)</label><input id="start_hour" type="number" min="0" max="23" /></div>
+          <div class="row-col"><label for="end_hour">종료 시간 (0~23)</label><input id="end_hour" type="number" min="0" max="23" /></div>
+        </div>
+
+        <div class="grid" style="margin-top:12px">
+          <div class="row-col"><label for="profit_min_rate">수익 최소 비율</label><input id="profit_min_rate" type="number" step="0.0001" min="0" /></div>
+          <div class="row-col"><label for="profit_max_rate">수익 최대 비율</label><input id="profit_max_rate" type="number" step="0.0001" min="0" /></div>
+        </div>
+
+        <div class="grid" style="margin-top:12px">
+          <div class="row-col"><label for="loss_min_rate">손실 최소 비율</label><input id="loss_min_rate" type="number" step="0.0001" min="0" /></div>
+          <div class="row-col"><label for="loss_max_rate">손실 최대 비율</label><input id="loss_max_rate" type="number" step="0.0001" min="0" /></div>
+        </div>
+
+        <div class="grid" style="margin-top:12px">
+          <div class="row-col"><label for="profit_probability">수익 확률 (%)</label><input id="profit_probability" type="number" step="0.01" min="0" max="100" /></div>
+          <div class="row-col"><label for="loss_probability">손실 확률 (%)</label><input id="loss_probability" type="number" step="0.01" min="0" max="100" /></div>
+        </div>
+
+        <div class="grid" style="margin-top:12px">
+          <div class="row-col"><label for="daily_user_cap">유저 하루 최대 지급액</label><input id="daily_user_cap" type="number" min="0" /></div>
+          <div class="row-col"><label for="daily_system_cap">시스템 하루 최대 지급액</label><input id="daily_system_cap" type="number" min="0" /></div>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="primary" id="btnSave">저장</button>
+          <button type="button" id="btnReload">다시 불러오기</button>
+        </div>
+        <div class="err" id="errBox"></div>
+        <div class="ok" id="okBox"></div>
+      </div>
+
+      <div class="card">
+        <div class="pill" style="margin-bottom:10px">현재 설정</div>
+        <div class="muted" id="summaryBox">불러오는 중...</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../shared/config.js?v=20260814-1408"></script>
+  <script src="../shared/sb.js?v=20260814-1408"></script>
+  <script src="../shared/app.js?v=20260814-1408"></script>
+
+  <script>
+    (function(){
+      const errBox = document.getElementById('errBox');
+      const okBox = document.getElementById('okBox');
+      const summaryBox = document.getElementById('summaryBox');
+      const sb = (window.aiProcessor && typeof window.aiProcessor.sb === 'function') ? window.aiProcessor.sb() : null;
+
+      function setErr(msg){ errBox.textContent = msg || ''; okBox.textContent = ''; }
+      function setOk(msg){ okBox.textContent = msg || ''; errBox.textContent = ''; }
+      function num(id){ return Number(document.getElementById(id).value || 0); }
+
+      if (!sb || typeof sb.from !== 'function') {
+        setErr('초기화 오류: Supabase 연결이 준비되지 않았습니다.');
+        return;
+      }
+
+      const adminFlag = localStorage.getItem('ai_processor_admin_login');
+      if (adminFlag !== 'true') location.href = 'login.html';
+
+      function fillForm(row){
+        document.getElementById('enabled').value = String(!!row.enabled);
+        document.getElementById('every_minutes').value = row.every_minutes ?? 10;
+        document.getElementById('start_hour').value = row.start_hour ?? 0;
+        document.getElementById('end_hour').value = row.end_hour ?? 23;
+        document.getElementById('profit_min_rate').value = row.profit_min_rate ?? row.min_rate ?? 0.0005;
+        document.getElementById('profit_max_rate').value = row.profit_max_rate ?? row.max_rate ?? 0.0020;
+        document.getElementById('loss_min_rate').value = row.loss_min_rate ?? 0.0001;
+        document.getElementById('loss_max_rate').value = row.loss_max_rate ?? 0.0005;
+        document.getElementById('profit_probability').value = row.profit_probability ?? 85;
+        document.getElementById('loss_probability').value = row.loss_probability ?? 15;
+        document.getElementById('daily_user_cap').value = row.daily_user_cap ?? 50000;
+        document.getElementById('daily_system_cap').value = row.daily_system_cap ?? 5000000;
+        document.getElementById('max_single_payout').value = row.max_single_payout ?? 10000;
+        summaryBox.innerHTML = `
+          자동지급: <b>${row.enabled ? 'ON' : 'OFF'}</b><br/>
+          간격: <b>${row.every_minutes}분</b><br/>
+          시간창: <b>${row.start_hour}:00 ~ ${row.end_hour}:00</b><br/>
+          수익 비율: <b>${row.profit_min_rate} ~ ${row.profit_max_rate}</b><br/>
+          손실 비율: <b>${row.loss_min_rate} ~ ${row.loss_max_rate}</b><br/>
+          수익/손실 확률: <b>${row.profit_probability}% / ${row.loss_probability}%</b><br/>
+          유저 하루 최대: <b>${Number(row.daily_user_cap || 0).toLocaleString('ko-KR')}원</b><br/>
+          시스템 하루 최대: <b>${Number(row.daily_system_cap || 0).toLocaleString('ko-KR')}원</b><br/>
+          1회 최대 지급: <b>${Number(row.max_single_payout || 0).toLocaleString('ko-KR')}원</b>`;
+      }
+
+      async function loadSettings(){
+        setErr(''); setOk('');
+        const { data, error } = await sb.from('app_payout_settings').select('*').eq('id', 1).maybeSingle();
+        if (error) { console.error('[loadSettings]', error); setErr('설정을 불러오지 못했습니다: ' + (error.message || '오류')); return; }
+        if (!data) { setErr('app_payout_settings(id=1) 행이 없습니다.'); return; }
+        fillForm(data);
+      }
+
+      async function saveSettings(){
+        setErr(''); setOk('');
+        const payload = {
+          enabled: document.getElementById('enabled').value === 'true',
+          every_minutes: num('every_minutes'),
+          start_hour: num('start_hour'),
+          end_hour: num('end_hour'),
+          min_rate: num('profit_min_rate'),
+          max_rate: num('profit_max_rate'),
+          profit_min_rate: num('profit_min_rate'),
+          profit_max_rate: num('profit_max_rate'),
+          loss_min_rate: num('loss_min_rate'),
+          loss_max_rate: num('loss_max_rate'),
+          profit_probability: num('profit_probability'),
+          loss_probability: num('loss_probability'),
+          daily_user_cap: num('daily_user_cap'),
+          daily_system_cap: num('daily_system_cap'),
+          max_single_payout: num('max_single_payout'),
+          updated_at: new Date().toISOString()
+        };
+        if (payload.every_minutes < 1) return setErr('지급 간격은 1분 이상이어야 합니다.');
+        if (payload.start_hour < 0 || payload.start_hour > 23 || payload.end_hour < 0 || payload.end_hour > 23) return setErr('시작/종료 시간은 0~23 사이여야 합니다.');
+        if (payload.profit_max_rate < payload.profit_min_rate) return setErr('수익 비율 범위를 다시 확인해주세요.');
+        if (payload.loss_max_rate < payload.loss_min_rate) return setErr('손실 비율 범위를 다시 확인해주세요.');
+        if (payload.profit_probability < 0 || payload.profit_probability > 100 || payload.loss_probability < 0 || payload.loss_probability > 100) return setErr('확률은 0~100 사이여야 합니다.');
+        if (Math.round((payload.profit_probability + payload.loss_probability) * 100) / 100 !== 100) return setErr('수익 확률과 손실 확률의 합은 100이어야 합니다.');
+        if (payload.daily_user_cap < 0 || payload.daily_system_cap < 0 || payload.max_single_payout < 0) return setErr('한도 값은 0 이상이어야 합니다.');
+
+        const { error } = await sb.from('app_payout_settings').update(payload).eq('id', 1);
+        if (error) { console.error('[saveSettings]', error); setErr('저장 실패: ' + (error.message || '오류')); return; }
+        setOk('저장 완료');
+        await loadSettings();
+      }
+
+      document.getElementById('btnSave').addEventListener('click', saveSettings);
+      document.getElementById('btnReload').addEventListener('click', loadSettings);
+      document.getElementById('btnGoMembers').addEventListener('click', () => location.href='admin_dashboard.html');
+      document.getElementById('btnGoProfit').addEventListener('click', () => location.href='admin-profit.html');
+      document.getElementById('btnLogout').addEventListener('click', () => { localStorage.removeItem('ai_processor_admin_login'); localStorage.removeItem('ai_processor_admin'); location.href='login.html'; });
+      loadSettings();
+    })();
+  </script>
+<script src="../shared/vip-push-config.js?v=20260923-1"></script><script src="../shared/vip-notify.js?v=20260923-1"></script></body>
+</html>

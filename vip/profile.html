@@ -1,0 +1,27 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VIP 프로필</title><link rel="stylesheet" href="../shared/vip.css?v=20260923-1"></head><body>
+<div class="vip-shell"><aside class="vip-side"><div class="vip-brand">AI 프로세스 VIP<small>PRIVATE COMMUNITY</small></div><nav class="vip-nav"><a class="" href="index.html">홈</a><a class="" href="chat.html">VIP 단체채팅</a><a class="" href="events.html">이벤트</a><a class="" href="support.html">1:1 상담<span id="navBadgeSupport" class="badge hidden"></span></a><a class="active" href="profile.html">프로필 / 알림</a><a href="../user/dashboard.html">AI 프로세스</a></nav></aside><main class="vip-main">
+<div class="vip-top"><div><h1>VIP 프로필</h1><p>단체채팅과 1:1 상담에서 사용할 닉네임과 프로필을 설정합니다.</p></div><button id="saveBtn" class="vip-btn primary">저장</button></div>
+<section class="vip-card vip-section"><div class="form-grid"><div class="field"><label>닉네임</label><input id="nickname" maxlength="20"></div><div class="field"><label>현재 프로필</label><div id="preview" class="vip-person"></div></div></div></section>
+<section class="vip-card vip-section"><div class="vip-section-head"><h2>프로필 100종</h2><small>사람 이미지 없이 동물 · 음식 · 사물 · 자연만 구성</small></div><div id="avatars" class="profile-grid"></div></section>
+<section class="vip-card vip-section"><div class="vip-section-head"><h2>알림 설정</h2><small>단체채팅 일반 메시지는 알림이 가지 않습니다.</small></div><div class="vip-list"><div class="switch-row"><div><strong>이벤트 / 관리자 공지</strong><small>관리자가 알림 발송을 선택한 이벤트·공지</small></div><button id="swEvents" class="switch"></button></div><div class="switch-row"><div><strong>1:1 상담 답변</strong><small>관리자가 1:1 답변을 보냈을 때</small></div><button id="swSupport" class="switch"></button></div><div class="switch-row"><div><strong>단체채팅 일반 메시지</strong><small>메시지가 많아 V1에서는 항상 알림 OFF</small></div><button class="switch" disabled></button></div></div><div style="margin-top:10px"><button id="notifyBtn" class="vip-btn">브라우저 알림 허용하기</button></div></section>
+</main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../shared/config.js?v=20260923-1"></script>
+<script src="../shared/sb.js?v=20260923-1"></script>
+<script src="../shared/app.js?v=20260923-1"></script>
+<script src="../shared/vip-push-config.js?v=20260923-1"></script>
+<script src="../shared/vip.js?v=20260923-1"></script>
+<script src="../shared/vip-notify.js?v=20260923-1"></script>
+
+<script>
+const user=AIVIP.requireUser(),sb=AIVIP.sb();let profile=null,selected='🐼';
+function drawPreview(){document.getElementById('preview').innerHTML=`<div class="vip-avatar">${AIVIP.escape(selected)}</div><div class="vip-person-text"><strong>${AIVIP.escape(document.getElementById('nickname').value||'VIP')}</strong><small>단체채팅 · 1:1 상담 공통 프로필</small></div>`}
+function drawAvatars(){document.getElementById('avatars').innerHTML=AIVIP.avatars.map((a,i)=>`<button class="avatar-choice ${a===selected?'active':''}" data-i="${i}" title="프로필 ${i+1}">${AIVIP.escape(a)}</button>`).join('');document.querySelectorAll('.avatar-choice').forEach(b=>b.onclick=()=>{selected=AIVIP.avatars[Number(b.dataset.i)];drawAvatars();drawPreview()})}
+function switches(){document.getElementById('swEvents').classList.toggle('on',!!profile.notify_events);document.getElementById('swSupport').classList.toggle('on',!!profile.notify_support)}
+(async()=>{profile=await AIVIP.ensureProfile(user);selected=profile.avatar_key||'🐼';document.getElementById('nickname').value=profile.nickname||user.name||user.username;drawAvatars();drawPreview();switches()})().catch(e=>alert(e.message));
+document.getElementById('nickname').oninput=drawPreview;
+document.getElementById('swEvents').onclick=()=>{profile.notify_events=!profile.notify_events;switches()};
+document.getElementById('swSupport').onclick=()=>{profile.notify_support=!profile.notify_support;switches()};
+document.getElementById('saveBtn').onclick=async()=>{const nickname=document.getElementById('nickname').value.trim();if(!nickname)return alert('닉네임을 입력해주세요.');const r=await sb.from('vip_profiles').update({nickname,avatar_key:selected,notify_events:profile.notify_events,notify_support:profile.notify_support,updated_at:new Date().toISOString()}).eq('user_id',user.id);if(r.error)return alert(r.error.message);alert('저장되었습니다.')};
+document.getElementById('notifyBtn').onclick=async()=>{const p=await AIVIPNotify.requestPermission();alert(p==='granted'?'브라우저 알림이 허용되었습니다.':'알림 권한을 확인해주세요.')};
+</script></body></html>

@@ -1,0 +1,26 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VIP 이벤트 관리</title><link rel="stylesheet" href="../shared/vip.css?v=20260923-1"></head><body>
+<div class="vip-shell"><aside class="vip-side"><div class="vip-brand">AI 프로세스 VIP<small>ADMIN CONSOLE</small></div><nav class="vip-nav"><a class="" href="admin-vip.html">VIP 대시보드</a><a class="" href="admin-vip-chat.html">단체채팅 관리</a><a class="" href="admin-vip-support.html">1:1 상담 관리<span id="navBadgeAdmin" class="badge hidden"></span></a><a class="active" href="admin-vip-events.html">이벤트 관리</a><a href="admin_dashboard.html">투자 관리</a><a href="admin-running.html">진행중 투자</a></nav></aside><main class="vip-main">
+<div class="vip-top"><div><h1>VIP 이벤트 관리</h1><p>이벤트 생성 · 참여자 확인 · 자동 추첨 · 알림 발송을 테스트합니다.</p></div></div>
+<section class="vip-card vip-section"><div class="vip-section-head"><h2>새 이벤트</h2><small>알림 발송 ON이면 등록 즉시 VIP 유저 알림 테이블에 생성</small></div><div class="form-grid"><div class="field"><label>제목</label><input id="title" placeholder="VIP 깜짝 이벤트"></div><div class="field"><label>당첨 인원</label><input id="winnerCount" type="number" min="1" value="10"></div><div class="field"><label>마감 시간</label><input id="ends" type="datetime-local"></div><div class="field"><label>알림 제목</label><input id="notifyTitle" value="🎁 AI 프로세스 VIP 이벤트"></div></div><div class="field" style="margin-top:9px"><label>이벤트 설명</label><textarea id="desc"></textarea></div><div class="field" style="margin-top:9px"><label>푸시 알림 내용</label><input id="notifyBody" placeholder="새로운 VIP 이벤트가 시작되었습니다."></div><div class="switch-row" style="margin-top:9px"><div><strong>등록과 동시에 알림</strong><small>단체채팅 메시지와 별개로 이벤트 알림만 발송 대상</small></div><button id="notifySwitch" class="switch on"></button></div><button id="createBtn" class="vip-btn primary" style="margin-top:10px">이벤트 등록</button></section>
+<section class="vip-card vip-section"><div class="vip-section-head"><h2>이벤트 목록</h2><button id="reload" class="vip-btn">새로고침</button></div><div id="events" class="vip-list"></div></section>
+</main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../shared/config.js?v=20260923-1"></script>
+<script src="../shared/sb.js?v=20260923-1"></script>
+<script src="../shared/app.js?v=20260923-1"></script>
+<script src="../shared/vip-push-config.js?v=20260923-1"></script>
+<script src="../shared/vip.js?v=20260923-1"></script>
+<script src="../shared/vip-notify.js?v=20260923-1"></script>
+
+<script>
+const admin=AIVIP.requireAdmin(),sb=AIVIP.sb();let notifyOn=true;
+document.getElementById('notifySwitch').onclick=()=>{notifyOn=!notifyOn;document.getElementById('notifySwitch').classList.toggle('on',notifyOn)};
+async function load(){
+ const r=await sb.from('vip_events').select('*,vip_event_entries(count),vip_event_winners(count)').order('created_at',{ascending:false});if(r.error)throw r.error;
+ document.getElementById('events').innerHTML=(r.data||[]).length?(r.data||[]).map(e=>`<div class="vip-row"><div class="vip-row-main"><strong>${AIVIP.escape(e.title)}</strong><small>${e.status} · 참여 ${e.vip_event_entries?.[0]?.count||0}명 · 당첨 ${e.vip_event_winners?.[0]?.count||0}/${e.winner_count}명 · 마감 ${AIVIP.time(e.ends_at)}</small></div><div class="vip-actions">${e.status==='진행중'?`<button class="vip-btn" onclick="draw('${e.id}',${e.winner_count})">자동 추첨</button><button class="vip-btn red" onclick="finish('${e.id}')">종료</button>`:''}</div></div>`).join(''):'<div class="vip-empty">등록된 이벤트가 없습니다.</div>';
+}
+document.getElementById('createBtn').onclick=async()=>{const title=document.getElementById('title').value.trim();if(!title)return alert('제목을 입력해주세요.');const payload={title,description:document.getElementById('desc').value.trim(),ends_at:document.getElementById('ends').value?new Date(document.getElementById('ends').value).toISOString():null,winner_count:Math.max(1,Number(document.getElementById('winnerCount').value||1)),notify_on_publish:notifyOn,notification_title:document.getElementById('notifyTitle').value.trim(),notification_body:document.getElementById('notifyBody').value.trim(),created_by:admin?.id||null};const r=await sb.from('vip_events').insert(payload);if(r.error)return alert(r.error.message);alert('이벤트를 등록했습니다.');load()};
+window.draw=async(id,count)=>{const en=await sb.from('vip_event_entries').select('user_id').eq('event_id',id);if(en.error)return alert(en.error.message);const arr=[...(en.data||[])].sort(()=>Math.random()-.5).slice(0,count);if(!arr.length)return alert('참여자가 없습니다.');await sb.from('vip_event_winners').delete().eq('event_id',id);const r=await sb.from('vip_event_winners').insert(arr.map(x=>({event_id:id,user_id:x.user_id})));if(r.error)return alert(r.error.message);const noti=arr.map(x=>({target_role:'user',target_user_id:x.user_id,type:'event',title:'🎉 VIP 이벤트 당첨',body:'축하합니다! 이벤트 당첨 결과를 확인해주세요.',target_url:'vip/events.html#event-'+id}));await sb.from('vip_notifications').insert(noti);alert('추첨 및 당첨 알림 등록을 완료했습니다.');load()};
+window.finish=async id=>{await sb.from('vip_events').update({status:'종료'}).eq('id',id);load()};
+document.getElementById('reload').onclick=load;load().catch(e=>alert('VIP SQL 설정을 확인해주세요. · '+e.message));
+</script></body></html>

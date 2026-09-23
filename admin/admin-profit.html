@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI 프로세스 ADMIN - 실현수익 증감</title>
+  <link rel="stylesheet" href="../shared/theme.css?v=20260814-1408" />
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg0);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
+    .wrap{max-width:980px;margin:24px auto;padding:0 14px}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+    .title{font-weight:800;letter-spacing:.06em}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:16px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    input{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0f1720;color:var(--text)}
+    button{padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:#0f1720;color:var(--text);cursor:pointer}
+    button.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#0b0f14;font-weight:700}
+    .muted{color:var(--muted);font-size:13px;line-height:1.5}
+    .err{color:#ef4444;font-size:13px;min-height:18px;margin-top:10px;white-space:pre-line}
+    .ok{color:#22c55e;font-size:13px;min-height:18px;margin-top:10px;white-space:pre-line}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px 8px;border-bottom:1px solid var(--line);font-size:13px}
+    th{color:var(--muted);text-align:left;font-weight:600}
+    .pill{display:inline-block;padding:3px 10px;border-radius:999px;border:1px solid var(--line);font-size:12px;color:var(--muted)}
+  </style>
+
+<style>
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css');
+body{font-family:"Pretendard Variable","Pretendard","Noto Sans KR",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;letter-spacing:-.015em!important}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="title">AI 프로세스 ADMIN · <span class="pill">실현수익 증감</span></div>
+      <div class="row">
+        <button type="button" id="btnGoMembers">회원 & 투자 관리</button>
+        <button type="button" id="btnGoAuto">자동지급 설정</button>
+        <button type="button" id="btnLogout">로그아웃</button>
+      </div>
+    </div>
+
+    <div class="card muted" style="margin-bottom:14px">
+      실현수익은 아래에서 증감 금액만 입력하면 <b>app_realized_logs</b>에 기록되고 <b>app_users.realized_amount</b>가 함께 갱신됩니다.
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="pill" style="margin-bottom:10px">1) 유저 선택</div>
+        <div class="muted" style="margin-bottom:6px">유저 아이디(username)</div>
+        <div class="row">
+          <input id="inpUsername" placeholder="예: user123" />
+          <button type="button" class="primary" id="btnFind">조회</button>
+        </div>
+
+        <div id="boxUser" class="muted" style="margin-top:10px">
+          선택된 유저: <b id="txtUser">-</b><br/>
+          현재 누적 실현수익: <b id="txtRealized">-</b>
+        </div>
+
+        <hr style="border:none;border-top:1px solid var(--line);margin:14px 0"/>
+        <div class="pill" style="margin-bottom:10px">2) 증감 적용</div>
+        <div class="muted" style="margin-bottom:6px">증감할 금액(원)</div>
+        <input id="inpDelta" placeholder="예: 10000 또는 -10000" />
+        <div class="row" style="margin-top:10px"><button type="button" class="primary" id="btnApply">확인</button></div>
+        <div class="err" id="errBox"></div>
+        <div class="ok" id="okBox"></div>
+      </div>
+
+      <div class="card">
+        <div class="pill" style="margin-bottom:10px">수익 로그 타임라인 (최근 20건)</div>
+        <div class="muted" style="margin-bottom:10px">선택한 유저의 최근 기록을 보여줍니다. (수동 실현수익 + 자동지급 payout 포함)</div>
+        <table>
+          <thead><tr><th style="width:160px">시간</th><th style="width:120px">증감</th><th>비고</th></tr></thead>
+          <tbody id="tbodyLogs"><tr><td colspan="3" class="muted">유저를 조회하면 최근 로그가 표시됩니다.</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../shared/config.js?v=20260814-1408"></script>
+  <script src="../shared/sb.js?v=20260814-1408"></script>
+  <script src="../shared/app.js?v=20260814-1408"></script>
+
+  <script>
+    (function(){
+      const fmt = new Intl.NumberFormat('ko-KR');
+      const errBox = document.getElementById('errBox');
+      const okBox = document.getElementById('okBox');
+      const sb = (window.aiProcessor && typeof window.aiProcessor.sb === 'function') ? window.aiProcessor.sb() : null;
+      let selectedUser = null;
+
+      function setErr(msg){ errBox.textContent = msg || ''; okBox.textContent = ''; }
+      function setOk(msg){ okBox.textContent = msg || ''; errBox.textContent = ''; }
+
+      if (!sb || typeof sb.from !== 'function') { setErr('초기화 오류: Supabase 연결이 준비되지 않았습니다.'); return; }
+      if (localStorage.getItem('ai_processor_admin_login') !== 'true') location.href = 'login.html';
+
+      async function loadLogs(userId){
+        const tbody = document.getElementById('tbodyLogs');
+        tbody.innerHTML = '<tr><td colspan="3" class="muted">불러오는 중...</td></tr>';
+        const [realizedRes, payoutRes] = await Promise.all([
+          sb.from('app_realized_logs').select('delta, note, created_at').eq('user_id', userId).order('created_at', { ascending: false }).limit(20),
+          sb.from('app_profit_logs').select('amount_delta, source_type, created_at').eq('user_id', userId).in('source_type', ['payout', 'process_payout']).order('created_at', { ascending: false }).limit(20)
+        ]);
+        if (realizedRes.error || payoutRes.error) {
+          console.error('[logs]', realizedRes.error, payoutRes.error);
+          tbody.innerHTML = '<tr><td colspan="3" class="muted">로그를 불러오지 못했습니다.</td></tr>';
+          return;
+        }
+        const realizedRows = (realizedRes.data || []).map(row => ({ amount: Number(row.delta || 0), note: row.note || '수동조정', created_at: row.created_at, kind: 'manual' }));
+        const payoutRows = (payoutRes.data || []).map(row => ({ amount: Number(row.amount_delta || 0), note: '자동지급 / payout', created_at: row.created_at, kind: 'payout' }));
+        const rows = [...realizedRows, ...payoutRows].sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 20);
+        if (!rows.length) { tbody.innerHTML = '<tr><td colspan="3" class="muted">기록이 없습니다.</td></tr>'; return; }
+        tbody.innerHTML = rows.map(row => {
+          const sign = row.amount > 0 ? '+' : '';
+          return `<tr><td>${new Date(row.created_at).toLocaleString('ko-KR')}</td><td><b>${sign}${fmt.format(row.amount)}</b></td><td>${row.note}</td></tr>`;
+        }).join('');
+      }
+
+      async function findUser(){
+        setErr(''); setOk('');
+        const username = (document.getElementById('inpUsername').value || '').trim();
+        if (!username) return setErr('유저 아이디(username)를 입력해주세요.');
+        const { data, error } = await sb.from('app_users').select('id, username, name, realized_amount').eq('username', username).maybeSingle();
+        if (error) { console.error('[findUser]', error); setErr('조회 실패: ' + (error.message || '오류')); return; }
+        if (!data) return setErr('해당 유저를 찾을 수 없습니다.');
+        selectedUser = data;
+        document.getElementById('txtUser').textContent = `${data.username} (${data.name || '-'})`;
+        document.getElementById('txtRealized').textContent = fmt.format(Number(data.realized_amount || 0)) + ' 원';
+        await loadLogs(data.id);
+        setOk('유저 조회 완료');
+      }
+
+      async function applyDelta(){
+        setErr(''); setOk('');
+        if (!selectedUser) return setErr('먼저 유저를 조회해주세요.');
+        const raw = (document.getElementById('inpDelta').value || '').trim().replace(/,/g, '');
+        const delta = Number(raw);
+        if (!raw || !Number.isFinite(delta) || delta === 0) return setErr('증감할 금액을 올바르게 입력해주세요. (0 제외)');
+
+        const { error } = await sb.rpc('admin_adjust_realized', { p_user_id: selectedUser.id, p_delta: delta, p_note: 'admin-profit' });
+        if (error) { console.error('[applyDelta]', error); setErr('적용 실패: ' + (error.message || '오류')); return; }
+
+        selectedUser.realized_amount = Number(selectedUser.realized_amount || 0) + delta;
+        document.getElementById('txtRealized').textContent = fmt.format(Number(selectedUser.realized_amount || 0)) + ' 원';
+        document.getElementById('inpDelta').value = '';
+        await loadLogs(selectedUser.id);
+        setOk(`적용 완료: ${delta > 0 ? '+' : ''}${fmt.format(delta)} 원`);
+      }
+
+      document.getElementById('btnFind').addEventListener('click', findUser);
+      document.getElementById('inpUsername').addEventListener('keydown', e => { if (e.key === 'Enter') findUser(); });
+      document.getElementById('btnApply').addEventListener('click', applyDelta);
+      document.getElementById('inpDelta').addEventListener('keydown', e => { if (e.key === 'Enter') applyDelta(); });
+      document.getElementById('btnGoMembers').addEventListener('click', () => location.href = 'admin_dashboard.html');
+      document.getElementById('btnGoAuto').addEventListener('click', () => location.href = 'admin-auto.html');
+      document.getElementById('btnLogout').addEventListener('click', () => { localStorage.removeItem('ai_processor_admin_login'); localStorage.removeItem('ai_processor_admin'); location.href = 'login.html'; });
+    })();
+  </script>
+<script src="../shared/vip-push-config.js?v=20260923-1"></script><script src="../shared/vip-notify.js?v=20260923-1"></script></body>
+</html>

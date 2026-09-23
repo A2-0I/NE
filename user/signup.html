@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI 프로세스 - 회원가입</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../shared/theme.css?v=20260815-1128" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon.png" />
+  <meta name="theme-color" content="#0a1120" />
+</head>
+<body class="auth-page auth-signup-page">
+  <main class="login-stage">
+    <section class="login-card signup-card" aria-label="회원가입">
+      <div class="login-card-head">
+        <div class="login-kicker">AI 프로세스</div>
+        <h1>회원가입</h1>
+        <p>기본 정보를 입력하고 가입을 요청하세요.</p>
+      </div>
+
+      <div class="auth-form">
+        <label class="auth-label" for="signupId">아이디</label>
+        <input class="auth-input" id="signupId" type="text" placeholder="아이디를 입력하세요" autocomplete="username" />
+
+        <label class="auth-label" for="signupPw">비밀번호</label>
+        <div class="auth-password">
+          <input class="auth-input" id="signupPw" type="password" placeholder="비밀번호를 입력하세요" autocomplete="new-password" />
+          <button class="auth-eye" id="toggleSignupPw" type="button" aria-label="비밀번호 보기" title="비밀번호 보기">
+            <svg class="eye-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6S2.5 12 2.5 12Z"></path><circle cx="12" cy="12" r="2.7"></circle></svg>
+            <svg class="eye-closed" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18"></path><path d="M10.6 6.2A10.9 10.9 0 0 1 12 6c6 0 9.5 6 9.5 6a16.5 16.5 0 0 1-2.4 3.1"></path><path d="M6.2 6.2C3.9 7.8 2.5 12 2.5 12s3.5 6 9.5 6a9.7 9.7 0 0 0 3.1-.5"></path></svg>
+          </button>
+        </div>
+
+        <label class="auth-label" for="signupName">이름</label>
+        <input class="auth-input" id="signupName" type="text" placeholder="이름" autocomplete="name" />
+
+        <label class="auth-label" for="signupPhone">전화번호</label>
+        <input class="auth-input" id="signupPhone" type="text" placeholder="전화번호" autocomplete="tel" />
+<div class="auth-actions">
+          <button class="auth-btn primary" id="btnSignup" type="button">회원가입</button>
+          <button class="auth-btn" id="btnBackLogin" type="button">로그인으로</button>
+        </div>
+
+        <div class="auth-msg err" id="errorBox"></div>
+        <div class="auth-msg ok" id="okBox"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../shared/config.js"></script>
+  <script src="../shared/sb.js"></script>
+  <script src="../shared/app.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const signupId = document.getElementById('signupId');
+      const signupPw = document.getElementById('signupPw');
+      const signupName = document.getElementById('signupName');
+      const signupPhone = document.getElementById('signupPhone');
+      const errorBox = document.getElementById('errorBox');
+      const okBox = document.getElementById('okBox');
+      const btnSignup = document.getElementById('btnSignup');
+      const btnBackLogin = document.getElementById('btnBackLogin');
+      const toggleSignupPw = document.getElementById('toggleSignupPw');
+
+      const sb = (window.aiProcessor && typeof window.aiProcessor.sb === 'function')
+        ? window.aiProcessor.sb()
+        : null;
+
+      if (!sb || typeof sb.from !== 'function') {
+        errorBox.textContent = '초기화 오류: Supabase 연결이 준비되지 않았습니다.\nshared/config.js / shared/sb.js 로딩을 확인하세요.';
+        console.error('[AI 프로세스] sb init failed:', sb);
+        return;
+      }
+
+      toggleSignupPw?.addEventListener('click', () => {
+        const show = signupPw.type === 'password';
+        signupPw.type = show ? 'text' : 'password';
+        toggleSignupPw.classList.toggle('is-visible', show);
+        toggleSignupPw.setAttribute('aria-label', show ? '비밀번호 숨기기' : '비밀번호 보기');
+        toggleSignupPw.setAttribute('title', show ? '비밀번호 숨기기' : '비밀번호 보기');
+      });
+
+      function setErr(msg) { errorBox.textContent = msg || ''; okBox.textContent = ''; }
+      function setOk(msg) { okBox.textContent = msg || ''; errorBox.textContent = ''; }
+
+      async function signup() {
+        const username = (signupId.value || '').trim();
+        const password = (signupPw.value || '').trim();
+        const name = (signupName.value || '').trim();
+        const phone = (signupPhone.value || '').trim();
+
+        setErr('');
+        if (!username || !password) return setErr('아이디와 비밀번호는 필수입니다.');
+
+        btnSignup.disabled = true;
+        btnSignup.textContent = '처리 중...';
+
+        try {
+          const { data: exists, error: exErr } = await sb
+            .from('app_users')
+            .select('id')
+            .eq('username', username)
+            .maybeSingle();
+
+          if (exErr) {
+            console.error('[signup] check error:', exErr);
+            setErr('회원 확인 실패: ' + (exErr.message || 'Supabase 오류'));
+            return;
+          }
+          if (exists) return setErr('이미 사용 중인 아이디입니다.');
+
+          const payload = {
+            username,
+            password_hash: password,
+            name: name || null,
+            phone: phone || null,
+            approved: false,
+            role: 'user',
+            status: '대기중',
+            amount: 0,
+            realized_amount: 0
+          };
+
+          const { error } = await sb.from('app_users').insert(payload);
+          if (error) {
+            console.error('[signup] insert error:', error);
+            setErr('회원가입 실패: ' + (error.message || '권한/RLS 또는 컬럼명 확인'));
+            return;
+          }
+
+          setOk('회원가입 완료! 관리자 승인 후 로그인 가능합니다.');
+          setTimeout(() => { window.location.href = 'index.html'; }, 900);
+        } finally {
+          btnSignup.disabled = false;
+          btnSignup.textContent = '회원가입';
+        }
+      }
+
+      btnSignup.addEventListener('click', signup);
+      signupPw.addEventListener('keydown', (e) => { if (e.key === 'Enter') signup(); });
+      btnBackLogin.addEventListener('click', () => { window.location.href = 'index.html'; });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AI 프로세스 - 내 투자</title>
+<link rel="stylesheet" href="../shared/theme.css?v=20260815-1128" />
+<style>
+
+:root{
+  --bg:#f4f8fd;--card:#ffffff;--soft:#f7faff;--line:#dce7f3;--line-strong:#cbdbea;
+  --text:#0e2550;--sub:#60718a;--muted:#8a99ae;--navy:#0b2a61;--blue:#136fe8;--blue2:#4c9cff;
+  --blue-soft:#eef6ff;--green:#0b8b62;--green-soft:#eaf8f2;--red:#c55161;--red-soft:#fff0f3;
+  --amber:#a56b18;--amber-soft:#fff6e8;--done:#6c7a8d;--done-soft:#f0f4f7;
+  --shadow:0 18px 50px rgba(23,61,112,.075);--shadow-soft:0 8px 28px rgba(23,61,112,.055)
+}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;min-height:100vh;background:
+  radial-gradient(760px 420px at -4% -3%,rgba(46,128,237,.11),transparent 62%),
+  radial-gradient(680px 360px at 103% 8%,rgba(101,177,255,.08),transparent 63%),
+  linear-gradient(180deg,#fafdff 0%,#f4f8fd 52%,#f7f9fc 100%);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;color:var(--text);letter-spacing:-.025em}
+button,input{font:inherit}.hidden{display:none!important}.green{color:var(--green)!important}.red{color:var(--red)!important}
+.shell{max-width:1180px;margin:0 auto;padding:20px 20px 56px}
+.topbar{position:sticky;top:12px;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px 17px 14px 20px;background:rgba(255,255,255,.92);border:1px solid rgba(210,225,240,.92);border-radius:22px;box-shadow:0 12px 35px rgba(20,55,102,.07);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.logo{font-weight:900;font-size:20px;letter-spacing:-.045em;color:var(--navy)}
+.logo::before{content:"";display:inline-block;width:8px;height:8px;margin-right:9px;border-radius:50%;background:linear-gradient(135deg,#0c6ff1,#58a8ff);box-shadow:0 0 0 5px rgba(19,111,232,.08);vertical-align:2px}
+.nav{display:flex;gap:6px;flex-wrap:wrap;padding:3px;background:#f5f8fc;border:1px solid #e5edf6;border-radius:13px}
+.nav button{border:0;background:transparent;color:#6a7a91;padding:9px 14px;border-radius:9px;font-size:12px;font-weight:800;cursor:pointer;transition:.18s ease}
+.nav button:hover{color:var(--navy);background:#fff}.nav button.active{background:linear-gradient(135deg,#0e4f9e,#176fcb);color:#fff;box-shadow:0 6px 16px rgba(15,83,160,.18)}
+.section{margin-top:16px}.card{position:relative;background:rgba(255,255,255,.985);border:1px solid #e4ebf3;border-radius:24px;box-shadow:0 14px 36px rgba(25,58,98,.055);padding:26px;overflow:hidden}
+#sectionStatus::before,#sectionRealtime::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,#0d68e5 0%,#4a9cff 58%,rgba(74,156,255,0) 100%)}
+.section-title{font-size:25px;font-weight:900;letter-spacing:-.045em}.section-sub{font-size:12.5px;color:var(--muted);margin-top:7px;line-height:1.65}
+.selector-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:10px}.selector-head h3{margin:0;font-size:25px;letter-spacing:-.045em;font-weight:900}.selector-head span{font-size:12px;color:var(--muted)}
+.filter-row{display:flex;gap:8px;margin:14px 0 14px}.filter-row button{border:1px solid #d7e3f0;background:#fff;color:#64758c;border-radius:999px;padding:9px 16px;font-size:11.5px;font-weight:820;cursor:pointer;box-shadow:0 3px 10px rgba(27,62,107,.035)}.filter-row button.active{background:linear-gradient(135deg,#0d3974,#125faf);color:#fff;border-color:#125397;box-shadow:0 7px 16px rgba(19,83,153,.15)}
+.investment-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;overflow:visible;padding:1px 1px 4px}
+.investment-item{position:relative;min-width:0;text-align:left;border:1px solid #e1e9f2;background:#fff;border-radius:18px;padding:17px 17px 16px;cursor:pointer;color:var(--text);box-shadow:0 7px 20px rgba(24,57,96,.035);transition:.18s ease transform,.18s ease border-color,.18s ease box-shadow;overflow:hidden}
+.investment-item::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:#dfeaf7;transition:.18s ease}.investment-item:hover{transform:translateY(-1px);border-color:#bdd1e6;box-shadow:0 12px 30px rgba(23,61,112,.08)}.investment-item.active{background:linear-gradient(145deg,#f8fbff,#fff);border-color:#8db6e2;box-shadow:0 10px 26px rgba(24,92,165,.085)}.investment-item.active::before{width:4px;background:linear-gradient(180deg,#0d69ea,#5aa8ff)}
+.inv-top{display:flex;justify-content:space-between;align-items:center;gap:8px}.inv-title-wrap{display:flex;align-items:center;gap:6px;min-width:0}.inv-code{font-size:15px;font-weight:900;color:var(--navy);letter-spacing:-.035em;overflow-wrap:anywhere}.inv-name-edit{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:22px;height:22px;border-radius:7px;color:#6e8199;font-size:13px;font-weight:900;cursor:pointer;transition:.16s ease}.inv-name-edit:hover{background:#edf5ff;color:#0c65d8}.inv-sub{font-size:11.5px;color:#7d8ca0;margin-top:8px;line-height:1.5}.inv-meta{display:flex;justify-content:space-between;align-items:flex-end;gap:8px;margin-top:13px;padding-top:12px;border-top:1px solid #edf2f7;font-size:12px;color:#5b6d85}.inv-meta b{font-size:14px;color:var(--navy)}.inv-rate-range{display:flex;flex-direction:column;align-items:flex-end;gap:3px}.inv-rate-range small{font-size:10px;font-weight:700;color:#7d8ca0}.inv-rate-range b{font-size:14px;white-space:nowrap}
+.badge,.state-pill{display:inline-flex;align-items:center;justify-content:center;padding:6px 10px;border-radius:999px;font-size:10.5px;font-weight:850;letter-spacing:-.01em}.badge.run,.state-pill.run{background:var(--green-soft);color:var(--green);border:1px solid #d7f0e7}.badge.wait,.state-pill.wait{background:var(--amber-soft);color:var(--amber);border:1px solid #f5e7ca}.badge.done,.state-pill.done{background:var(--done-soft);color:var(--done);border:1px solid #e1e7ed}
+.empty{padding:26px;text-align:center;color:var(--muted);font-size:12px}
+.detail{margin-top:21px;padding-top:23px;border-top:1px solid #e7eef6}.detail-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding:0 2px}.detail-title-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.detail-head h2{font-size:25px;margin:0;letter-spacing:-.045em;font-weight:900;overflow-wrap:anywhere}.rename-investment{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border:1px solid #d7e3f0;background:#fff;color:#5f7188;border-radius:10px;padding:0;font-size:15px;font-weight:900;line-height:1;cursor:pointer;box-shadow:0 3px 10px rgba(27,62,107,.03);transition:.16s ease;flex:0 0 auto}.rename-investment:hover{border-color:#9fc3ea;color:#0d62c8;background:#f7fbff}.detail-head p{font-size:12px;color:var(--muted);margin:7px 0 0;line-height:1.55}
+.schedule{position:relative;margin-top:15px;padding:18px;background:linear-gradient(180deg,#f8fbff 0%,#f6f9fc 100%);border:1px solid #dce7f1;border-radius:20px;box-shadow:inset 0 1px 0 rgba(255,255,255,.95)}
+.schedule::before{content:"";position:absolute;left:18px;right:18px;top:0;height:3px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,#1a6edf,#7eb7f2)}
+.schedule-top{display:grid;grid-template-columns:minmax(200px,.72fr) minmax(0,1.28fr);gap:12px;align-items:stretch}.duration,.statebox,.date{background:#fff;border:1px solid #e5ecf3;border-radius:15px;box-shadow:0 3px 10px rgba(27,62,107,.02)}.duration{padding:18px;display:flex;flex-direction:column;justify-content:center;min-height:122px}.duration span,.statebox>span,.date span{font-size:11px;color:var(--muted)}.duration strong{display:block;font-size:30px;color:var(--navy);margin-top:10px;letter-spacing:-.05em;line-height:1.12}.statebox{padding:17px 18px}.state-inline{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:7px}.state-inline strong{font-size:30px;color:var(--navy);letter-spacing:-.05em;line-height:1.1}.state-finance{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;padding-top:13px;border-top:1px solid #e6eef6}.state-finance div{padding:11px 13px;border-radius:12px;background:#f8fbff;border:1px solid #edf3f8}.state-finance span{display:block;font-size:10.5px;color:var(--muted);margin-bottom:5px}.state-finance b{font-size:19px;line-height:1.25;letter-spacing:-.035em}.dates{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:11px}.range-dates{grid-template-columns:1fr 2fr}.date{padding:12px 14px}.date span{display:block;margin-bottom:5px}.date strong{font-size:13px;line-height:1.45;color:#1c355b}.duration strong{font-size:21px;line-height:1.3;letter-spacing:-.04em}.rate-wide strong{font-size:18px;line-height:1.35;letter-spacing:-.025em}.rate-wide{background:linear-gradient(180deg,#fff,#fbfdff)}.rate-wide span{font-weight:700;color:#6f7f92}.rate-wide strong{color:#173e6b;font-weight:900}.progress-head{display:flex;justify-content:space-between;margin-top:15px;font-size:11px;color:#6b7d93}.progress-head strong{font-size:12px;color:var(--navy)}.progress{height:8px;background:#e3ebf3;border-radius:999px;overflow:hidden;margin-top:7px;box-shadow:inset 0 1px 2px rgba(23,57,98,.045)}.progress i{display:block;height:100%;background:linear-gradient(90deg,#126ee8,#62a8ef);border-radius:999px;box-shadow:0 0 12px rgba(18,110,232,.22)}
+.schedule.state-run .statebox{border-color:#cbe8dc}.schedule.state-run .state-inline strong{color:var(--green)}.schedule.state-run .progress i{background:linear-gradient(90deg,#1375df,#21a67d)}.schedule.state-wait .statebox{border-color:#f0dfb7}.schedule.state-wait .state-inline strong{color:var(--amber)}.schedule.state-wait .progress i{background:linear-gradient(90deg,#d59b3d,#e6bd6a)}.schedule.state-done .statebox{border-color:#dfe5ea}.schedule.state-done .state-inline strong{color:var(--done)}.schedule.state-done .progress i{background:linear-gradient(90deg,#8396a8,#aab9c6)}
+.steps{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.step{position:relative;padding:14px 12px;border:1px solid #dfe8f2;border-radius:15px;background:#fff;font-size:11px;color:#687789;line-height:1.5;text-align:center;box-shadow:0 4px 14px rgba(27,62,107,.025)}.step small{display:block;color:#9aa8ba;margin-bottom:4px;letter-spacing:.06em;font-size:9.5px}.step b{display:block;font-size:13px;color:#30435f}.step.active{border-color:#8db8e8;background:linear-gradient(180deg,#f2f8ff,#fbfdff);box-shadow:inset 0 3px 0 #2678dc,0 6px 18px rgba(33,102,179,.07)}.step.active small,.step.active b{color:#135ba8}
+.realtime-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:15px}.realtime-head h3{margin:0;font-size:19px;letter-spacing:-.035em}.realtime-head p{font-size:11.5px;color:var(--muted);margin:5px 0 0}.toggle{display:flex;gap:4px;padding:4px;background:#f0f5fa;border:1px solid #e4ecf4;border-radius:12px}.toggle button{border:0;background:transparent;padding:8px 11px;border-radius:8px;font-size:10.5px;font-weight:800;color:#6b7788;cursor:pointer}.toggle button.active{background:#fff;color:#0f58aa;box-shadow:0 3px 9px rgba(30,70,120,.08)}
+.realtime-values{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.mini{padding:15px 16px;background:#fbfdff;border:1px solid #e5ecf3;border-radius:15px;box-shadow:0 3px 12px rgba(27,62,107,.02)}.mini span{display:block;font-size:10.5px;color:var(--muted)}.mini strong{display:block;margin-top:6px;font-size:20px;line-height:1.25;letter-spacing:-.04em}.chart-wrap{margin-top:12px;padding:17px;background:#fff;border:1px solid #e4ebf2;border-radius:17px;box-shadow:0 3px 12px rgba(27,62,107,.018)}.chart-title{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;font-weight:820;color:#243d61}.chart-title small{font-weight:500;color:var(--muted)}canvas{display:block;width:100%;height:190px;margin-top:9px}.timeline{margin-top:11px;display:flex;flex-direction:column;gap:7px}.timeline-row{display:grid;grid-template-columns:72px 1fr auto;gap:9px;padding:11px 12px;border:1px solid #e8eef5;border-radius:12px;background:#fbfdff;font-size:11px}.timeline-row time{color:var(--muted)}.up{color:var(--green);font-weight:820}.down{color:var(--red);font-weight:820}
+#sectionIntro{padding:28px}.guide-grid{display:grid;grid-template-columns:minmax(0,.94fr) minmax(0,1.06fr);gap:18px;margin-top:20px!important}.guide-col{padding:22px 23px;border:1px solid #dde8f3;border-radius:20px;background:linear-gradient(145deg,#fbfdff,#f7faff);box-shadow:0 8px 24px rgba(27,62,107,.035)}.guide-col:first-child{padding-left:23px;border-right:1px solid #dde8f3}.guide-col:last-child{padding-right:23px}.guide-col h3{font-size:20px;margin:0 0 9px;color:var(--navy);letter-spacing:-.04em}.guide-col h4{font-size:14px;margin:22px 0 9px;color:#183860}.guide-col p,.guide-col li{font-size:12.2px;line-height:1.78;color:#63758d}.guide-col p{margin:0}.guide-col ul{padding-left:18px;margin:8px 0 0}.guide-col li+li{margin-top:4px}.guide-note{margin-top:13px!important;padding:12px 14px;border-radius:12px;background:#eef6ff;color:#41658e!important;font-size:11.5px!important}.scenario-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}.scenario-badge{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;background:#eaf3ff;color:#135da9;font-size:10.5px;font-weight:850}.guide-steps .gstep{display:grid;grid-template-columns:40px 1fr;gap:11px;padding:14px 0;border-top:1px solid #e4edf6}.guide-steps .gstep:first-child{border-top:0}.gnum{width:34px;height:34px;border-radius:10px;background:linear-gradient(145deg,#eaf3ff,#f5f9ff);border:1px solid #d6e7f9;display:grid;place-items:center;color:#145da9;font-size:10px;font-weight:900}.gstep b{font-size:12.5px;color:#203e64}.gstep p{margin:4px 0 0}.scenario-steps{margin-top:8px}.scenario-steps .gstep{padding:13px 0}.scenario-footer{margin:14px 0 0!important;padding:13px 14px;border-radius:13px;background:#fff;border:1px solid #e2eaf3;color:#526b89!important}
+.account{max-width:860px;margin-left:auto;margin-right:auto}.account-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-bottom:10px}.account-row{display:grid;grid-template-columns:150px 1fr;padding:15px 3px;border-bottom:1px solid #e7eef5;font-size:12.5px}.account-row:last-child{border-bottom:0}.account-row span{color:var(--muted)}.account-row strong{text-align:right;color:#263d5e}.btn{border:1px solid #d8e4ef;background:#fff;color:#56687f;border-radius:11px;padding:9px 13px;font-size:11px;font-weight:800;cursor:pointer}.btn.soft{background:linear-gradient(135deg,#0f4e98,#176fcb);border-color:#155ea9;color:#fff;box-shadow:0 6px 16px rgba(18,87,163,.14)}
+.modal-wrap{display:none;position:fixed;inset:0;z-index:100;background:rgba(14,33,59,.32);align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(4px)}.modal-wrap.on{display:flex}.modal{width:min(420px,100%);background:#fff;border:1px solid #dce6f0;border-radius:20px;padding:22px;box-shadow:0 22px 60px rgba(18,44,80,.18)}.modal h3{margin:0;font-size:18px}.modal p{color:var(--muted);font-size:11px}.field{margin-top:14px}.field label{display:block;font-size:11px;color:#607087;margin-bottom:6px}.field input{width:100%;height:44px;border:1px solid #d9e3ed;border-radius:10px;padding:0 11px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+@media(max-width:930px){.investment-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.guide-grid{grid-template-columns:1fr}.guide-col:first-child{border-right:1px solid #dde8f3}.schedule-top{grid-template-columns:1fr 1.35fr}}
+@media(max-width:760px){body{padding-bottom:78px}.shell{padding:0 12px 26px}.topbar{top:0;margin:0 -12px;border-radius:0;border-left:0;border-right:0;padding:12px 14px;box-shadow:0 4px 18px rgba(20,55,102,.055)}.logo{font-size:18px}.logo::before{display:none}.nav{position:fixed;z-index:50;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding:7px 8px max(7px,env(safe-area-inset-bottom));background:rgba(255,255,255,.96);border:1px solid #dfe8f1;border-left:0;border-right:0;border-bottom:0;border-radius:0;box-shadow:0 -8px 26px rgba(22,54,96,.08);backdrop-filter:blur(16px)}.nav button{padding:9px 3px;border-radius:9px;font-size:10px}.nav button.active{box-shadow:none}.section{margin-top:12px}.card{padding:18px 16px;border-radius:20px}.section-title,.selector-head h3{font-size:21px}.selector-head{align-items:flex-start}.selector-head span{display:none}.filter-row{margin:12px 0}.investment-strip{display:flex;gap:9px;overflow:auto;padding-bottom:7px;scroll-snap-type:x proximity}.investment-item{flex:0 0 min(84vw,310px);padding:15px;scroll-snap-align:start}.detail{margin-top:17px;padding-top:18px}.detail-head h2{font-size:21px}.schedule{padding:13px;border-radius:18px}.schedule::before{left:13px;right:13px}.schedule-top{grid-template-columns:1fr;gap:9px}.duration{min-height:auto;padding:14px 15px}.duration strong{font-size:24px}.statebox{padding:14px 15px}.state-inline strong{font-size:24px}.state-finance b{font-size:17px}.dates{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.date{padding:10px 8px}.date strong{font-size:11px;word-break:keep-all}.steps{gap:6px}.step{padding:11px 5px}.step b{font-size:11px}.step small{font-size:8.5px}.realtime-head{align-items:flex-start;flex-direction:column}.toggle{align-self:stretch}.toggle button{flex:1}.realtime-values{grid-template-columns:1fr 1fr;gap:7px}.mini{padding:13px}.mini strong{font-size:17px}.chart-wrap{padding:13px;border-radius:15px}.chart-title small{display:none}canvas{height:160px}.timeline-row{grid-template-columns:64px 1fr auto;padding:10px 9px}.guide-col{padding:18px 16px!important;border-radius:17px}.guide-col h3{font-size:18px}.guide-col h4{margin-top:18px}.account-row{grid-template-columns:105px 1fr}}
+@media(max-width:430px){.shell{padding-left:10px;padding-right:10px}.topbar{margin-left:-10px;margin-right:-10px}.card{padding:16px 13px}.filter-row button{padding:8px 13px}.investment-item{flex-basis:88vw}.state-finance{gap:6px}.state-finance div{padding:9px}.state-finance b{font-size:15px}.dates{gap:5px}.date{padding:9px 6px}.date span{font-size:9px}.date strong{font-size:10px}.progress{height:8px}.realtime-values{grid-template-columns:1fr}.steps{grid-template-columns:repeat(3,1fr)}.scenario-head{align-items:flex-start;flex-direction:column}}
+
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="topbar"><div class="logo">AI 프로세스</div><nav class="nav"><button id="tabStatus" class="active">내 투자</button><button id="tabIntro">안내</button><button id="tabAccount">내 정보</button><button id="btnVip" type="button" onclick="location.href='../vip/index.html'">VIP</button><button id="btnLogout">로그아웃</button></nav></header>
+
+<section id="sectionStatus" class="section card">
+  <div class="selector-head"><h3>내 투자 내역</h3><span>투자를 선택하면 아래 상세 정보가 바뀝니다.</span></div>
+  <div class="filter-row"><button id="filterRunning" class="active">진행중</button><button id="filterDone">진행 완료</button></div>
+  <div id="investmentStrip" class="investment-strip"></div>
+  <div id="noInvestment" class="empty hidden">표시할 투자가 없습니다.</div>
+
+  <div id="investmentDetail" class="detail hidden">
+    <div class="detail-head"><div class="detail-title-row"><h2 id="invCode">-</h2><button id="btnRenameInvestment" class="rename-investment" type="button" title="이름 변경" aria-label="이름 변경">✎</button></div></div>
+    <div class="schedule" id="investmentSchedule">
+      <div class="schedule-top">
+        <div class="duration"><span>진행 시간</span><strong id="invPeriod">최소 1시간 ~ 최대 30일</strong></div>
+        <div class="statebox">
+          <span>현재 상태</span>
+          <div class="state-inline"><strong id="invStateBig">-</strong><span id="invStateBadge" class="state-pill done">-</span></div>
+          <div class="state-finance">
+            <div><span>투자금액</span><b id="invAmount">- 원</b></div>
+            <div><span>수익금액</span><b id="invProfit" class="green">- 원</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="dates range-dates"><div class="date"><span>시작</span><strong id="invStart">-</strong></div><div class="date rate-wide"><span>예상 수익률 범위</span><strong id="invRate">10% ~ 900% 이상</strong></div></div>
+      <div class="progress-head"><span>진행률</span><strong id="invProgressText">-</strong></div><div class="progress"><i id="invProgress"></i></div>
+    </div>
+    <div class="steps compact-steps"><div class="step" data-step="wait"><small>READY</small><b>대기중</b></div><div class="step" data-step="run"><small>RUNNING</small><b>진행중</b></div><div class="step" data-step="done"><small>COMPLETE</small><b>진행 완료</b></div></div>
+  </div>
+</section>
+
+<section id="sectionRealtime" class="section card">
+  <div class="realtime-head"><div><h3>실시간 수익 현황</h3><p>선택한 투자 기준의 수익과 그래프입니다.</p></div><div class="toggle"><button id="toggleToday" class="active">오늘 수익</button><button id="toggleTotal">누적 수익</button></div></div>
+  <div class="realtime-values"><div class="mini"><span id="rtProfitLabel">수익 (오늘)</span><strong class="green" id="rtProfit">- 원</strong></div><div class="mini"><span>총 금액 (투자 + 수익)</span><strong id="rtTotal">- 원</strong></div></div>
+  <div class="chart-wrap"><div class="chart-title"><span id="chartTitle">이 투자의 수익 그래프 (오늘)</span><small id="chartHint">최근 데이터 기준</small></div><canvas id="profitChart" width="920" height="180"></canvas></div>
+  <div class="chart-wrap"><div class="chart-title"><span id="timelineTitle">수익 로그 (오늘)</span><small>선택한 투자 기준</small></div><div id="profitTimeline" class="timeline"></div></div>
+  <div class="chart-wrap"><div class="chart-title"><span>투자금 변경 내역</span><small>추가 투자 시 기존 종료일 유지</small></div><div id="amountTimeline" class="timeline"></div></div>
+</section>
+
+<section id="sectionIntro" class="section card hidden">
+  <div class="section-title">안내</div>
+  <div class="section-sub">AI 프로세스의 역할과 투자 진행 흐름을 상세하게 확인할 수 있습니다.</div>
+  <div class="guide-grid">
+    <div class="guide-col">
+      <h3>AI 프로세스</h3>
+      <p>AI 프로세스는 대량의 시장 데이터와 알고리즘을 활용해 시장 흐름을 분석하고, 여러 종목과 자산군에 분산 투자하는 AI 투자 프로세스입니다. 사용자는 투자 조건을 확인하고, 진행 과정과 결과를 한 화면에서 확인할 수 있습니다.</p>
+
+      <h4>AI가 하는 일</h4>
+      <ul>
+        <li>경제 지표, 뉴스, 시황 데이터를 종합적으로 스캔</li>
+        <li>최대 30개 내외 종목으로 포트폴리오 자동 구성</li>
+        <li>시장 변화와 손익·변동성에 따른 투자 비중 조정</li>
+        <li>손익·변동성 데이터를 기반으로 전략을 반복 분석</li>
+      </ul>
+
+      <h4>투자 진행</h4>
+      <p>개발자님과 상담 후, <strong>추천 진행 시간 및 예상 수익률을 안내받아 투자 진행을 AI에게 맡깁니다.</strong> 진행 시간은 <strong>최소 1시간 ~ 최대 30일</strong>이며, 상담 내용을 바탕으로 최종 진행 조건이 결정됩니다.</p>
+      <p class="guide-note">투자금, 진행 시간, 예상 수익률은 각 투자마다 별도로 설정되며 진행 중인 투자와 완료된 투자를 각각 확인할 수 있습니다.</p>
+
+      <h4>진행 상태 안내</h4>
+      <div class="guide-steps">
+        <div class="gstep"><div class="gnum">01</div><div><b>대기중 · READY</b><p>투자금과 진행 조건이 확정되기 전 단계입니다. 투자가 확정되면 다음 단계로 이동합니다.</p></div></div>
+        <div class="gstep"><div class="gnum">02</div><div><b>진행중 · RUNNING</b><p>설정된 투자금과 진행 조건에 따라 AI 투자가 진행되는 단계입니다.</p></div></div>
+        <div class="gstep"><div class="gnum">03</div><div><b>진행 완료 · COMPLETE</b><p>설정된 투자 진행이 완료된 상태입니다. 수익 정산을 준비합니다.</p></div></div>
+      </div>
+
+      <h4>이런 분께 적합합니다</h4>
+      <ul>
+        <li>세부 종목 선택보다 전체 전략과 결과에 집중하고 싶은 분</li>
+        <li>최소 1시간 ~ 최대 30일 구간의 투자를 선호하는 분</li>
+        <li>AI 기반 의사결정과 분산 투자를 경험하고 싶은 분</li>
+      </ul>
+    </div>
+
+    <div class="guide-col">
+      <div class="scenario-head">
+        <h3>투자 예시 시나리오</h3>
+        <span class="scenario-badge">전문 운영 관점</span>
+      </div>
+      <p class="guide-note">예시 · 50,000원을 AI에 맡기는 경우</p>
+      <div class="guide-steps scenario-steps">
+        <div class="gstep">
+          <div class="gnum">01</div>
+          <div><b>상담 및 조건 설정</b><p>개발자님과 상담 후 추천 진행 시간과 예상 수익률을 안내받습니다. 50,000원의 투자금과 최종 진행 조건이 확정되면 해당 투자는 <strong>진행중</strong> 상태로 전환됩니다.</p></div>
+        </div>
+        <div class="gstep">
+          <div class="gnum">02</div>
+          <div><b>시장·종목 스캔</b><p>최근 수 시간부터 중장기 가격 흐름, 거래량, 변동성, 뉴스·이슈 등의 데이터를 수집하고 과거 학습 데이터와 현재 시장 상황을 비교해 효율이 높은 섹터와 종목을 선별합니다.</p></div>
+        </div>
+        <div class="gstep">
+          <div class="gnum">03</div>
+          <div><b>포트폴리오 구성</b><p>투자금 일부는 기본 안전 구간, 일부는 공격 구간으로 나누어 비중을 설정합니다. 예를 들어 변동성이 낮은 자산 60%와 높은 자산 40%를 조합해 10~20개 내외 종목을 구성하고, 예상 수익과 리스크에 따라 비중을 조정합니다.</p></div>
+        </div>
+        <div class="gstep">
+          <div class="gnum">04</div>
+          <div><b>진행 중 리스크 관리</b><p>진행 구간 동안 가격 변화를 모니터링하고, 사전 설정된 손실 한도 또는 급격한 변동이 발생할 경우 비중을 축소하거나 현금 비중을 늘립니다. 특정 종목이나 섹터에 과도하게 집중되지 않도록 비중 상한을 유지합니다.</p></div>
+        </div>
+        <div class="gstep">
+          <div class="gnum">05</div>
+          <div><b>진행 완료 및 정산</b><p>설정된 진행 구간이 종료되면 해당 투자는 <strong>진행 완료</strong> 상태로 전환됩니다. 전체 평가금액과 수익 결과를 정리하고, 진행 중 생성된 성과 데이터는 이후 전략 분석에 반영됩니다.</p></div>
+        </div>
+      </div>
+      <p class="scenario-footer">이 과정에서 사용자는 투자금, 진행 시간, 예상 수익률과 현재 진행 상태를 확인하고, 실제 종목 선택·비중 조정·리스크 관리 과정은 AI 프로세스가 담당하는 구조입니다.</p>
+    </div>
+  </div>
+</section>
+
+<section id="sectionAccount" class="section card account hidden"><div class="account-head"><div><div class="section-title">내 정보</div><div class="section-sub">AI 프로세스에서 사용하는 기본 회원 정보입니다.</div></div><button id="btnSettings" class="btn soft">설정</button></div><div class="account-row"><span>이름</span><strong id="acctName">-</strong></div><div class="account-row"><span>아이디</span><strong id="acctUsername">-</strong></div><div class="account-row"><span>휴대폰</span><strong id="acctPhone">-</strong></div><div class="account-row"><span>총 투자금액</span><strong id="acctAmount">-</strong></div><div class="account-row"><span>총 수익</span><strong class="green" id="acctProfit">-</strong></div></section>
+</div>
+
+<div id="settingsModal" class="modal-wrap"><div class="modal"><h3>설정</h3><p>비밀번호를 변경할 수 있습니다.</p><div class="field"><label>새 비밀번호</label><input id="editPw" type="password" placeholder="변경하지 않으려면 비워두세요"></div><div class="modal-actions"><button id="btnSettingsClose" class="btn">취소</button><button id="btnSettingsSave" class="btn soft">저장</button></div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../shared/config.js?v=20260815-1128"></script><script src="../shared/sb.js?v=20260815-1128"></script><script src="../shared/app.js?v=20260815-1128"></script><script src="../shared/vip-push-config.js?v=20260923-1"></script><script src="../shared/vip-notify.js?v=20260923-1"></script>
+<script>
+const sb=(window.aiProcessor&&typeof window.aiProcessor.sb==='function')?window.aiProcessor.sb():null;
+let user=null,userRow=null,investments=[],selectedId=null,filterMode='running',profitMode='today',reloadTimer=null;
+const $=id=>document.getElementById(id); const money=n=>Math.round(Number(n||0)).toLocaleString('ko-KR')+' 원';
+function investmentLabel(i){const n=String(i?.display_name||'').trim();return n||'AI 프로세스 진행 현황'}
+function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+function statusClass(s){return s==='진행중'?'run':s==='대기중'?'wait':'done'};
+function fmtDate(v){if(!v)return '-';const d=new Date(v);if(Number.isNaN(d.getTime()))return '-';return `${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`}
+function durationText(i){if(i.is_indefinite)return '기간 미정';const m=Number(i.duration_minutes||0);if(m%1440===0)return `${m/1440}일 0시간`;if(m%60===0)return `${m/60}시간 0분`;return `${Math.floor(m/60)}시간 ${m%60}분`}
+function assignedText(i){const v=i.target_return_pct;return v==null?'-':`${Number(v).toFixed(2).replace(/\.00$/,'')}%`}
+function progressOf(i){if(i.status==='진행 완료')return 100;if(i.is_indefinite||!i.started_at||!i.ends_at)return 0;const s=new Date(i.started_at).getTime(),e=new Date(i.ends_at).getTime(),n=Date.now();return Math.max(0,Math.min(100,((n-s)/(e-s))*100))}
+function requireLogin(){try{user=JSON.parse(localStorage.getItem('ai_processor_current_user')||'null')}catch{}if(!user){location.href='index.html';return false}return true}
+function setTab(tab){['Status','Intro','Account'].forEach(x=>{$('section'+x)?.classList.toggle('hidden',x.toLowerCase()!==tab);$('tab'+x)?.classList.toggle('active',x.toLowerCase()===tab)});$('sectionRealtime')?.classList.toggle('hidden',tab!=='status')}
+async function loadAll(keep=true){if(!sb)return alert('Supabase 연결을 확인해주세요.');const {data:u,error:ue}=await sb.from('app_users').select('*').eq('username',user.username).maybeSingle();if(ue||!u)throw ue||new Error('사용자를 찾을 수 없습니다.');userRow=u;const {data,error}=await sb.from('app_investments').select('*').eq('user_id',u.id).order('created_at',{ascending:false});if(error)throw error;investments=data||[];if(!keep||!investments.some(x=>x.id===selectedId))selectedId=investments.find(x=>x.status==='진행중')?.id||investments[0]?.id||null;renderSelector();renderSelected();fillAccount();subscribeRealtime()}
+function visibleInvestments(){return investments.filter(x=>filterMode==='running'?x.status!=='진행 완료':x.status==='진행 완료')}
+function renderSelector(){const list=visibleInvestments();$('investmentStrip').innerHTML='';$('noInvestment').classList.toggle('hidden',list.length>0);list.forEach(i=>{const b=document.createElement('button');b.className='investment-item'+(i.id===selectedId?' active':'');b.innerHTML=`<div class="inv-top"><div class="inv-title-wrap"><div class="inv-code">${escapeHtml(investmentLabel(i))}</div><span class="inv-name-edit" title="이름 변경" aria-label="이름 변경">✎</span></div><span class="badge ${statusClass(i.status)}">${i.status}</span></div><div class="inv-sub">AI 프로세스 · ${fmtDate(i.started_at)} 시작</div><div class="inv-meta"><span>${money(i.amount)}</span><span class="inv-rate-range"><small>예상 수익률</small><b>10% ~ 900% 이상</b></span></div>`;b.onclick=()=>{selectedId=i.id;renderSelector();renderSelected()};const edit=b.querySelector('.inv-name-edit');if(edit)edit.onclick=e=>{e.stopPropagation();editInvestmentName(i.id)};$('investmentStrip').appendChild(b)});if(list.length&&!list.some(x=>x.id===selectedId)){selectedId=list[0].id;renderSelector();renderSelected()}}
+async function editInvestmentName(id){const i=investments.find(x=>x.id===id);if(!i||!userRow)return;const current=String(i.display_name||'');const next=window.prompt('이 투자에 표시할 이름을 입력해주세요.\n비워두면 기본 이름으로 돌아갑니다.',current);if(next===null)return;const name=next.trim();if(name.length>50)return alert('이름은 최대 50자까지 입력할 수 있습니다.');const {error}=await sb.from('app_investments').update({display_name:name||null}).eq('id',i.id).eq('user_id',userRow.id);if(error){console.error(error);return alert('이름 변경에 실패했습니다. Supabase에 display_name 컬럼이 추가되었는지 확인해주세요.')}i.display_name=name||null;renderSelector();renderSelected()}
+async function renderSelected(){const i=investments.find(x=>x.id===selectedId);$('investmentDetail').classList.toggle('hidden',!i);$('sectionRealtime').classList.toggle('hidden',!i||$('sectionStatus').classList.contains('hidden'));if(!i){drawChart([]);$('profitTimeline').innerHTML='';$('amountTimeline').innerHTML='';return}$('invCode').textContent=investmentLabel(i);$('invAmount').textContent=money(i.amount);const profitNum=Number(i.realized_amount||0);$('invProfit').textContent=(profitNum>=0?'+':'')+money(profitNum);$('invProfit').classList.toggle('green',profitNum>=0);$('invProfit').classList.toggle('red',profitNum<0);$('invPeriod').textContent='최소 1시간 ~ 최대 30일';$('invStateBig').textContent=i.status;$('invStateBadge').textContent=i.status;const sClass=statusClass(i.status);$('invStateBadge').className='state-pill '+sClass;$('investmentSchedule').className='schedule state-'+sClass;$('invStart').textContent=fmtDate(i.started_at);$('invRate').textContent='10% ~ 900% 이상';const p=progressOf(i);$('invProgressText').textContent=i.is_indefinite?(i.status==='진행중'?'진행중':'-'):`${p.toFixed(0)}%`;$('invProgress').style.width=i.is_indefinite?(i.status==='진행중'?'100%':'0%'):`${p}%`;document.querySelectorAll('.step').forEach(x=>x.classList.remove('active'));document.querySelector(`.step[data-step="${i.status==='진행중'?'run':i.status==='진행 완료'?'done':'wait'}"]`)?.classList.add('active');await loadInvestmentLogs(i)}
+function localDayStart(){const d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate()).toISOString()}
+async function loadInvestmentLogs(i){let q=sb.from('app_profit_logs').select('amount_delta,created_at,source_type').eq('investment_id',i.id).in('source_type',['payout','process_payout']);if(profitMode==='today'){q=q.gte('created_at',localDayStart()).order('created_at',{ascending:true}).limit(1000);}else{q=q.order('created_at',{ascending:false}).limit(200);}const {data,error}=await q;if(error){console.error(error);return}const logs=profitMode==='today'?(data||[]):[...(data||[])].reverse();const profit=logs.reduce((s,x)=>s+Number(x.amount_delta||0),0);const shown=profitMode==='today'?profit:Number(i.realized_amount||0);$('rtProfitLabel').textContent=profitMode==='today'?'수익 (오늘)':'수익 (누적)';$('rtProfit').textContent=(shown>=0?'+':'')+money(shown);$('rtTotal').textContent=money(Number(i.amount||0)+shown);$('chartTitle').textContent=`이 투자의 수익 그래프 (${profitMode==='today'?'오늘':'누적'})`;$('timelineTitle').textContent=`수익 로그 (${profitMode==='today'?'오늘':'최근 기록'})`;let c=profitMode==='today'?0:Number(i.realized_amount||0)-logs.reduce((s,x)=>s+Number(x.amount_delta||0),0);const series=[c];logs.forEach(x=>{c+=Number(x.amount_delta||0);series.push(c)});drawChart(series);const desc=[...logs].reverse().slice(0,60);$('profitTimeline').innerHTML=desc.length?desc.map(x=>`<div class="timeline-row"><time>${fmtDate(x.created_at)}</time><span>${Number(x.amount_delta)>=0?'수익':'손실'}</span><strong class="${Number(x.amount_delta)>=0?'up':'down'}">${Number(x.amount_delta)>=0?'+':''}${money(x.amount_delta)}</strong></div>`).join(''):'<div class="empty">수익 기록이 없습니다.</div>';const {data:al}=await sb.from('app_investment_amount_logs').select('delta,note,created_at').eq('investment_id',i.id).order('created_at',{ascending:false});$('amountTimeline').innerHTML=(al||[]).length?(al||[]).map(x=>`<div class="timeline-row"><time>${fmtDate(x.created_at)}</time><span>${x.note||'투자금 변경'}</span><strong>${Number(x.delta)>=0?'+':''}${money(x.delta)}</strong></div>`).join(''):'<div class="empty">투자금 변경 기록이 없습니다.</div>'}
+function drawChart(values){const c=$('profitChart'),ctx=c.getContext('2d');const dpr=window.devicePixelRatio||1,w=c.clientWidth||920,h=c.clientHeight||180;c.width=w*dpr;c.height=h*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);ctx.strokeStyle='#edf1f5';ctx.lineWidth=1;for(let y=20;y<h;y+=(h-30)/3){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}if(!values||values.length<2)values=[0,0];let min=Math.min(...values),max=Math.max(...values);if(max===min){max+=1;min-=1}const pad=12,step=(w-pad*2)/(values.length-1);ctx.beginPath();values.forEach((v,n)=>{const x=pad+n*step,y=pad+(max-v)/(max-min)*(h-pad*2);n?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.strokeStyle='#4473a6';ctx.lineWidth=2.8;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke()}
+function fillAccount(){if(!userRow)return;const amount=investments.reduce((s,x)=>s+Number(x.amount||0),0),profit=investments.reduce((s,x)=>s+Number(x.realized_amount||0),0);$('acctName').textContent=userRow.name||'-';$('acctUsername').textContent=userRow.username||'-';$('acctPhone').textContent=userRow.phone||'-';$('acctAmount').textContent=money(amount);$('acctProfit').textContent=(profit>=0?'+':'')+money(profit)}
+let channel=null;function subscribeRealtime(){if(!userRow||channel)return;channel=sb.channel('multi-invest-user-'+userRow.id).on('postgres_changes',{event:'*',schema:'public',table:'app_investments',filter:`user_id=eq.${userRow.id}`},scheduleReload).on('postgres_changes',{event:'INSERT',schema:'public',table:'app_profit_logs',filter:`user_id=eq.${userRow.id}`},scheduleReload).subscribe()}function scheduleReload(){clearTimeout(reloadTimer);reloadTimer=setTimeout(()=>loadAll(true).catch(console.error),450)}
+$('btnRenameInvestment').onclick=()=>{if(selectedId)editInvestmentName(selectedId)};$('filterRunning').onclick=()=>{filterMode='running';$('filterRunning').classList.add('active');$('filterDone').classList.remove('active');renderSelector()};$('filterDone').onclick=()=>{filterMode='done';$('filterDone').classList.add('active');$('filterRunning').classList.remove('active');renderSelector()};$('toggleToday').onclick=()=>{profitMode='today';$('toggleToday').classList.add('active');$('toggleTotal').classList.remove('active');renderSelected()};$('toggleTotal').onclick=()=>{profitMode='total';$('toggleTotal').classList.add('active');$('toggleToday').classList.remove('active');renderSelected()};$('tabStatus').onclick=()=>setTab('status');$('tabIntro').onclick=()=>setTab('intro');$('tabAccount').onclick=()=>setTab('account');$('btnLogout').onclick=()=>window.aiProcessor.logout('index.html');$('btnSettings').onclick=()=>$('settingsModal').classList.add('on');$('btnSettingsClose').onclick=()=>$('settingsModal').classList.remove('on');$('btnSettingsSave').onclick=async()=>{const pw=$('editPw').value.trim();if(!pw)return $('settingsModal').classList.remove('on');const {error}=await sb.from('app_users').update({password_hash:pw,updated_at:new Date().toISOString()}).eq('id',userRow.id);if(error)return alert('저장 중 오류가 발생했습니다.');$('editPw').value='';$('settingsModal').classList.remove('on');alert('비밀번호가 변경되었습니다.')};
+window.addEventListener('resize',()=>{const i=investments.find(x=>x.id===selectedId);if(i)loadInvestmentLogs(i)});document.addEventListener('DOMContentLoaded',()=>{if(!requireLogin())return;loadAll(false).catch(e=>{console.error(e);alert('데이터를 불러오지 못했습니다. SQL 설치 여부를 확인해주세요.')});setInterval(()=>{if(!$('sectionStatus').classList.contains('hidden'))renderSelected()},30000)});
+</script>
+</body></html>

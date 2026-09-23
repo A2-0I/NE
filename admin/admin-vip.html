@@ -1,0 +1,27 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VIP 관리자</title><link rel="stylesheet" href="../shared/vip.css?v=20260923-1"></head><body>
+<div class="vip-shell"><aside class="vip-side"><div class="vip-brand">AI 프로세스 VIP<small>ADMIN CONSOLE</small></div><nav class="vip-nav"><a class="active" href="admin-vip.html">VIP 대시보드</a><a class="" href="admin-vip-chat.html">단체채팅 관리</a><a class="" href="admin-vip-support.html">1:1 상담 관리<span id="navBadgeAdmin" class="badge hidden"></span></a><a class="" href="admin-vip-events.html">이벤트 관리</a><a href="admin_dashboard.html">투자 관리</a><a href="admin-running.html">진행중 투자</a></nav></aside><main class="vip-main">
+<div class="vip-top"><div><h1>VIP 운영 대시보드</h1><p>단체채팅 · 1:1 상담 · 이벤트 · 알림을 관리합니다.</p></div><div class="vip-actions"><button id="btnNotify" class="vip-btn">🔔 관리자 알림 허용</button><button id="btnSound" class="vip-btn">🔊 문의 알람 켜기</button></div></div>
+<section class="vip-grid"><div class="vip-card vip-stat"><span>VIP 회원</span><strong id="sMembers">0명</strong></div><div class="vip-card vip-stat"><span>안 읽은 1:1 문의</span><strong id="sUnread">0건</strong></div><div class="vip-card vip-stat"><span>진행 이벤트</span><strong id="sEvents">0건</strong></div></section>
+<section class="vip-event-grid" style="margin-top:12px"><a class="vip-card vip-section" href="admin-vip-support.html"><div class="vip-section-head"><h2>1:1 상담 관리</h2><span id="supportPill" class="vip-pill">0</span></div><p style="font-size:12px;color:#6b7280;margin:0">새 문의가 오면 Realtime + 30초 보조확인으로 알림합니다.</p></a><a class="vip-card vip-section" href="admin-vip-chat.html"><div class="vip-section-head"><h2>단체채팅 관리</h2><span class="vip-pill">관리</span></div><p style="font-size:12px;color:#6b7280;margin:0">메시지 삭제 · 회원 강퇴/해제를 관리합니다.</p></a></section>
+<section class="vip-card vip-section"><div class="vip-section-head"><h2>관리자 알림 발송</h2><small>단체채팅 일반 메시지가 아닌, 원하는 문구만 푸시 대상으로 등록</small></div><div class="form-grid"><div class="field"><label>알림 제목</label><input id="broadcastTitle" value="AI 프로세스 VIP"></div><div class="field"><label>클릭 이동</label><select id="broadcastUrl"><option value="vip/index.html">VIP 홈</option><option value="vip/events.html">이벤트</option><option value="vip/support.html">1:1 상담</option></select></div></div><div class="field" style="margin-top:9px"><label>알림 내용</label><textarea id="broadcastBody" placeholder="예: 오늘 오후 6시 VIP 이벤트가 시작됩니다."></textarea></div><div style="margin-top:9px"><button id="sendBroadcast" class="vip-btn primary">VIP 전체에게 알림 등록</button></div></section>
+</main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../shared/config.js?v=20260923-1"></script>
+<script src="../shared/sb.js?v=20260923-1"></script>
+<script src="../shared/app.js?v=20260923-1"></script>
+<script src="../shared/vip-push-config.js?v=20260923-1"></script>
+<script src="../shared/vip.js?v=20260923-1"></script>
+<script src="../shared/vip-notify.js?v=20260923-1"></script>
+
+<script>
+const admin=AIVIP.requireAdmin(),sb=AIVIP.sb();
+async function loadStats(){
+ const [p,t,e]=await Promise.all([sb.from('vip_profiles').select('user_id',{count:'exact',head:true}).eq('vip_enabled',true),sb.from('vip_support_threads').select('unread_admin'),sb.from('vip_events').select('id',{count:'exact',head:true}).eq('status','진행중')]);
+ document.getElementById('sMembers').textContent=(p.count||0)+'명';const unread=(t.data||[]).reduce((s,x)=>s+Number(x.unread_admin||0),0);document.getElementById('sUnread').textContent=unread+'건';document.getElementById('supportPill').textContent=unread;document.getElementById('sEvents').textContent=(e.count||0)+'건';
+ const b=document.getElementById('navBadgeAdmin');if(unread){b.textContent=unread;b.classList.remove('hidden')}else b.classList.add('hidden');
+}
+document.getElementById('btnNotify').onclick=async()=>{const p=await AIVIPNotify.requestPermission();alert(p==='granted'?'관리자 알림이 허용되었습니다.':'브라우저 알림 권한을 확인해주세요.')};
+document.getElementById('btnSound').onclick=()=>{AIVIPNotify.enableSound();alert('1:1 문의 알람음을 켰습니다.')};
+document.getElementById('sendBroadcast').onclick=async()=>{const title=document.getElementById('broadcastTitle').value.trim(),body=document.getElementById('broadcastBody').value.trim(),url=document.getElementById('broadcastUrl').value;if(!title||!body)return alert('제목과 내용을 입력해주세요.');const p=await sb.from('vip_profiles').select('user_id').eq('vip_enabled',true).eq('group_kicked',false);if(p.error)return alert(p.error.message);const rows=(p.data||[]).map(x=>({target_role:'user',target_user_id:x.user_id,type:'broadcast',title,body,target_url:url}));if(rows.length){const r=await sb.from('vip_notifications').insert(rows);if(r.error)return alert(r.error.message)}alert('알림을 등록했습니다. 사이트가 열려 있는 유저에게 즉시 전달됩니다.')};
+loadStats().catch(e=>alert('VIP SQL 설정을 확인해주세요. · '+e.message));window.addEventListener('vip-notification',loadStats);
+</script></body></html>

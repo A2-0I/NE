@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI 프로세스 ADMIN - 진행중 투자</title>
+<link rel="stylesheet" href="../shared/theme.css?v=20260915-1">
+<style>
+:root{
+  --bg:#f5f8fb;--card:#fff;--soft:#f8fafc;--line:#e3e9f0;--text:#17243a;
+  --sub:#657287;--muted:#8c98a7;--navy:#234a78;--blue-soft:#eef5fc;
+  --green:#13836d;--green-soft:#eaf7f3;--amber:#9a7021;--amber-soft:#fff7e8;
+  --shadow:0 6px 18px rgba(37,57,82,.035)
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#f6f8fb;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;color:var(--text)}
+button,input,select{font:inherit}
+.layout{display:grid;grid-template-columns:214px minmax(0,1fr);min-height:100vh}
+.sidebar{padding:18px 12px;background:#fff;border-right:1px solid var(--line)}
+.logo{font-size:18px;font-weight:850;color:var(--navy);margin:4px 8px 17px}
+.nav a{display:block;text-decoration:none;color:#687588;padding:10px 11px;border-radius:9px;font-size:13px;font-weight:750;margin:2px 0}
+.nav a.active{background:var(--blue-soft);color:var(--navy)}
+.logout{margin:18px 8px 0;border:0;background:none;color:#8b96a7;font-size:12px;cursor:pointer}
+.main{padding:18px 20px;min-width:0}
+.header{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:11px}
+.header h1{margin:0;font-size:23px;letter-spacing:-.035em}
+.header p{margin:4px 0 0;color:var(--muted);font-size:12px}
+.header-actions{display:flex;align-items:center;gap:7px}
+.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border:1px solid var(--line);background:#fff;color:#59677a;border-radius:8px;padding:8px 11px;font-size:11px;font-weight:780;cursor:pointer}
+.btn.primary{background:var(--navy);border-color:var(--navy);color:#fff}
+.error{display:none;margin-bottom:9px;padding:9px 11px;border:1px solid #f0ccd0;background:#fff6f7;color:#a74d56;border-radius:10px;font-size:11px}
+.error.show{display:block}
+.overview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-bottom:8px}
+.metric{background:#fff;border:1px solid var(--line);border-radius:11px;padding:10px 12px;box-shadow:var(--shadow)}
+.metric span{display:block;font-size:10px;color:var(--muted);margin-bottom:3px}
+.metric strong{font-size:16px;letter-spacing:-.03em}
+.metric strong.green{color:var(--green)}
+.toolbar{display:flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line);border-radius:11px;padding:7px 8px;margin-bottom:8px;box-shadow:var(--shadow)}
+.search{flex:1;min-width:180px;height:34px;border:1px solid var(--line);border-radius:8px;padding:0 11px;background:var(--soft);outline:none;font-size:12px}
+.search:focus{border-color:#b6cce2;background:#fff}
+.sort{height:34px;border:1px solid var(--line);border-radius:8px;padding:0 31px 0 10px;background:#fff;color:#566478;outline:none;font-size:11px}
+.count{font-size:11px;color:var(--muted);white-space:nowrap;margin-left:2px}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+.table-scroll{overflow:auto;max-height:calc(100vh - 215px)}
+.table-head,.row{
+  display:grid;
+  grid-template-columns:minmax(128px,1.05fr) minmax(165px,1.35fr) 88px 93px 100px 104px 78px 91px 54px;
+  align-items:center;column-gap:8px;min-width:980px
+}
+.table-head{
+  position:sticky;top:0;z-index:3;padding:8px 11px;background:#f8fafc;border-bottom:1px solid var(--line);
+  color:#7c8999;font-size:10px;font-weight:800
+}
+.row{padding:8px 11px;border-bottom:1px solid #edf1f5;min-height:54px;transition:.12s ease}
+.row:last-child{border-bottom:0}
+.row:hover{background:#fbfdff}
+.user strong,.process strong{display:block;font-size:12px;line-height:1.25;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user small,.process small{display:block;margin-top:2px;color:var(--muted);font-size:9.5px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.process strong{color:var(--navy)}
+.value{font-size:11.5px;font-weight:760;white-space:nowrap}
+.value.green{color:var(--green)}
+.age{display:inline-flex;align-items:center;justify-content:center;min-width:58px;padding:4px 6px;border-radius:999px;background:#f1f5f9;color:#53647a;font-size:10px;font-weight:820;white-space:nowrap}
+.age.day{background:var(--blue-soft);color:var(--navy)}
+.age.long{background:var(--amber-soft);color:var(--amber)}
+.manage{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border:1px solid #d8e3ef;border-radius:7px;height:28px;color:var(--navy);font-size:10px;font-weight:800;background:#fff}
+.manage:hover{background:var(--blue-soft)}
+.empty{padding:46px 20px;text-align:center;color:var(--muted);font-size:12px}
+.updated{font-size:10px;color:#9aa5b3;margin-top:6px;text-align:right}
+@media(max-width:1080px){
+  .layout{grid-template-columns:1fr}.sidebar{position:static;border-right:0;border-bottom:1px solid var(--line);padding:10px}
+  .logo{margin:2px 5px 8px}.nav{display:flex;overflow:auto}.nav a{white-space:nowrap}.logout{display:none}
+  .main{padding:12px}.table-scroll{max-height:none}
+}
+@media(max-width:680px){
+  .header{align-items:stretch;flex-direction:column}.header-actions{justify-content:flex-end}
+  .overview{grid-template-columns:1fr 1fr}
+  .toolbar{align-items:stretch;flex-direction:column}.search,.sort{width:100%}.count{margin:0}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="logo">AI 프로세스 ADMIN</div>
+    <nav class="nav">
+      <a href="admin-members.html">회원 관리</a>
+      <a href="admin_dashboard.html">투자 관리</a>
+      <a class="active" href="admin-running.html">진행중 투자</a>
+      <a href="admin-profit.html">수익 관리</a>
+      <a href="admin-auto.html">자동 지급</a>
+    <a href="admin-vip.html">VIP 관리</a></nav>
+    <button id="btnLogout" class="logout">로그아웃</button>
+  </aside>
+
+  <main class="main">
+    <div class="header">
+      <div>
+        <h1>진행중 투자</h1>
+        <p>현재 진행 중인 투자를 한 화면에서 빠르게 확인합니다.</p>
+      </div>
+      <div class="header-actions">
+        <button id="btnRefresh" class="btn">새로고침</button>
+        <a class="btn primary" href="admin_dashboard.html">투자 관리</a>
+      </div>
+    </div>
+
+    <div id="errorBox" class="error"></div>
+
+    <section class="overview">
+      <div class="metric"><span>진행중 투자</span><strong id="metricInvestments">0건</strong></div>
+      <div class="metric"><span>진행 회원</span><strong id="metricUsers">0명</strong></div>
+      <div class="metric"><span>총 투자금</span><strong id="metricAmount">0 원</strong></div>
+      <div class="metric"><span>현재 누적 수익</span><strong id="metricProfit" class="green">0 원</strong></div>
+    </section>
+
+    <section class="toolbar">
+      <input id="search" class="search" placeholder="회원 이름 · 아이디 · 프로세스 이름 검색">
+      <select id="sort" class="sort">
+        <option value="oldest">오래 진행된 순</option>
+        <option value="newest">최근 시작 순</option>
+        <option value="profit">수익률 높은 순</option>
+        <option value="amount">투자금 높은 순</option>
+      </select>
+      <span id="visibleCount" class="count">0건 표시</span>
+    </section>
+
+    <section class="card">
+      <div class="table-scroll">
+        <div class="table-head">
+          <div>회원</div><div>프로세스</div><div>진행 시간</div><div>시작</div>
+          <div>투자금</div><div>현재 수익</div><div>수익률</div><div>최근 지급</div><div>관리</div>
+        </div>
+        <div id="rows"><div class="empty">진행중 투자 정보를 불러오는 중입니다.</div></div>
+      </div>
+    </section>
+    <div id="updated" class="updated"></div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../shared/config.js?v=20260915-1"></script>
+<script src="../shared/sb.js?v=20260915-1"></script>
+<script src="../shared/app.js?v=20260915-1"></script>
+<script>
+const sb=(window.aiProcessor&&typeof window.aiProcessor.sb==='function')?window.aiProcessor.sb():null;
+const $=id=>document.getElementById(id);
+let investments=[],usersMap=new Map(),channel=null;
+
+function checkAdmin(){
+  if(localStorage.getItem('ai_processor_admin_login')!=='true'){
+    alert('관리자 로그인이 필요합니다.');
+    location.href='login.html';
+    return false;
+  }
+  return true;
+}
+function money(n){return Number(n||0).toLocaleString('ko-KR')+' 원'}
+function pct(n){return Number(n||0).toLocaleString('ko-KR',{minimumFractionDigits:0,maximumFractionDigits:2})+'%'}
+function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+function codeLabel(c){const m=String(c||'').match(/^AP-\d{2}(\d{4}-\d+)$/);return 'AI 프로세스 #'+(m?m[1]:String(c||'').replace(/^AP-/,''))}
+function investmentLabel(i){const n=String(i?.display_name||'').trim();return n||codeLabel(i?.processor_code)}
+function fmtKst(v){
+  if(!v)return '-';
+  const d=new Date(v);
+  if(Number.isNaN(d.getTime()))return '-';
+  const p=new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(d);
+  const g=t=>p.find(x=>x.type===t)?.value||'';
+  return `${g('month')}.${g('day')} ${g('hour')}:${g('minute')}`;
+}
+function elapsedMs(i){return Math.max(0,Date.now()-new Date(i.started_at||i.created_at).getTime())}
+function elapsedText(i){
+  const mins=Math.floor(elapsedMs(i)/60000);
+  const d=Math.floor(mins/1440),h=Math.floor((mins%1440)/60),m=mins%60;
+  if(d>0)return `${d}일 ${h}시간`;
+  if(h>0)return `${h}시간 ${m}분`;
+  return `${m}분`;
+}
+function ageClass(i){
+  const h=elapsedMs(i)/3600000;
+  return h>=72?'long':h>=24?'day':'';
+}
+function currentRate(i){
+  const a=Number(i.amount||0),p=Number(i.realized_amount||0);
+  return a>0?(p/a*100):0;
+}
+function userOf(i){return usersMap.get(i.user_id)||{}}
+
+async function loadData(){
+  setError('');
+  if(!sb)throw new Error('Supabase 연결을 확인해주세요.');
+
+  const [{data:invData,error:invErr},{data:userData,error:userErr}]=await Promise.all([
+    sb.from('app_investments').select('*').eq('status','진행중').order('started_at',{ascending:true}),
+    sb.from('app_users').select('id,username,name,approved,status,role').neq('role','admin')
+  ]);
+
+  if(invErr)throw invErr;
+  if(userErr)throw userErr;
+
+  investments=invData||[];
+  usersMap=new Map((userData||[]).map(u=>[u.id,u]));
+  render();
+  $('updated').textContent='마지막 갱신 · '+new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date());
+}
+function filteredRows(){
+  const q=$('search').value.trim().toLowerCase();
+  let rows=investments.filter(i=>{
+    if(!q)return true;
+    const u=userOf(i);
+    return [u.name,u.username,investmentLabel(i),i.processor_code].some(v=>String(v||'').toLowerCase().includes(q));
+  });
+
+  const sort=$('sort').value;
+  rows=[...rows].sort((a,b)=>{
+    if(sort==='newest')return new Date(b.started_at||b.created_at)-new Date(a.started_at||a.created_at);
+    if(sort==='profit')return currentRate(b)-currentRate(a);
+    if(sort==='amount')return Number(b.amount||0)-Number(a.amount||0);
+    return new Date(a.started_at||a.created_at)-new Date(b.started_at||b.created_at);
+  });
+  return rows;
+}
+function render(){
+  const all=investments;
+  const userIds=new Set(all.map(i=>i.user_id));
+  const amount=all.reduce((s,i)=>s+Number(i.amount||0),0);
+  const profit=all.reduce((s,i)=>s+Number(i.realized_amount||0),0);
+
+  $('metricInvestments').textContent=all.length+'건';
+  $('metricUsers').textContent=userIds.size+'명';
+  $('metricAmount').textContent=money(amount);
+  $('metricProfit').textContent=money(profit);
+
+  const rows=filteredRows();
+  $('visibleCount').textContent=rows.length+'건 표시';
+
+  $('rows').innerHTML=rows.length?rows.map(i=>{
+    const u=userOf(i),rate=currentRate(i);
+    return `<div class="row">
+      <div class="user">
+        <strong>${escapeHtml(u.name||'-')}</strong>
+        <small>${escapeHtml(u.username||'-')}</small>
+      </div>
+      <div class="process">
+        <strong>${escapeHtml(investmentLabel(i))}</strong>
+        <small>${escapeHtml(i.processor_code||'')}</small>
+      </div>
+      <div><span class="age ${ageClass(i)}">${elapsedText(i)}</span></div>
+      <div class="value">${fmtKst(i.started_at)}</div>
+      <div class="value">${money(i.amount)}</div>
+      <div class="value green">${money(i.realized_amount)}</div>
+      <div class="value green">${pct(rate)}</div>
+      <div class="value lastpay">${fmtKst(i.last_payout_at)}</div>
+      <div><a class="manage" href="admin_dashboard.html?user=${encodeURIComponent(i.user_id)}&investment=${encodeURIComponent(i.id)}">관리</a></div>
+    </div>`;
+  }).join(''):'<div class="empty">조건에 맞는 진행중 투자가 없습니다.</div>';
+}
+function setError(msg){
+  const box=$('errorBox');
+  if(!msg){box.classList.remove('show');box.textContent='';return}
+  box.textContent=msg;box.classList.add('show');
+}
+function subscribe(){
+  if(!sb?.channel)return;
+  try{if(channel)sb.removeChannel(channel)}catch(e){}
+  channel=sb.channel('admin-running-overview')
+    .on('postgres_changes',{event:'*',schema:'public',table:'app_investments'},()=>loadData().catch(handleError))
+    .on('postgres_changes',{event:'*',schema:'public',table:'app_users'},()=>loadData().catch(handleError))
+    .subscribe();
+}
+function handleError(e){
+  console.error(e);
+  setError('진행중 투자 정보를 불러오지 못했습니다. 잠시 후 새로고침해주세요. · '+(e?.message||'오류'));
+}
+$('search').addEventListener('input',render);
+$('sort').addEventListener('change',render);
+$('btnRefresh').addEventListener('click',()=>loadData().catch(handleError));
+$('btnLogout').addEventListener('click',()=>{
+  localStorage.removeItem('ai_processor_admin_login');
+  location.href='login.html';
+});
+setInterval(()=>{if(investments.length)render()},60000);
+
+document.addEventListener('DOMContentLoaded',()=>{
+  if(!checkAdmin())return;
+  loadData().then(subscribe).catch(handleError);
+});
+</script>
+<script src="../shared/vip-push-config.js?v=20260923-1"></script><script src="../shared/vip-notify.js?v=20260923-1"></script></body>
+</html>

@@ -1,0 +1,41 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VIP 1:1 상담</title><link rel="stylesheet" href="../shared/vip.css?v=20260923-1"></head><body>
+<div class="vip-shell"><aside class="vip-side"><div class="vip-brand">AI 프로세스 VIP<small>PRIVATE COMMUNITY</small></div><nav class="vip-nav"><a class="" href="index.html">홈</a><a class="" href="chat.html">VIP 단체채팅</a><a class="" href="events.html">이벤트</a><a class="active" href="support.html">1:1 상담<span id="navBadgeSupport" class="badge hidden"></span></a><a class="" href="profile.html">프로필 / 알림</a><a href="../user/dashboard.html">AI 프로세스</a></nav></aside><main class="vip-main" style="padding-bottom:10px">
+<section class="vip-chat-shell"><div class="vip-chat-head"><div><strong>AI 프로세스 VIP · 1:1 상담</strong><small id="threadStatus">관리자에게 직접 문의할 수 있습니다.</small></div><button id="btnNotify" class="vip-btn">🔔 알림 허용</button></div>
+<div id="chatList" class="vip-chat-list"><div class="vip-empty">상담방을 준비하는 중입니다.</div></div>
+<div class="vip-compose"><div id="replyBar" class="compose-reply"><span id="replyText"></span><button id="cancelReply" class="vip-btn">취소</button></div><div class="compose-row"><input id="file" type="file" accept="image/*" hidden><button id="photoBtn" class="compose-icon">＋</button><textarea id="message" placeholder="관리자에게 메시지를 입력하세요."></textarea><button id="sendBtn" class="compose-send">전송</button></div></div>
+</section></main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../shared/config.js?v=20260923-1"></script>
+<script src="../shared/sb.js?v=20260923-1"></script>
+<script src="../shared/app.js?v=20260923-1"></script>
+<script src="../shared/vip-push-config.js?v=20260923-1"></script>
+<script src="../shared/vip.js?v=20260923-1"></script>
+<script src="../shared/vip-notify.js?v=20260923-1"></script>
+
+<script>
+const user=AIVIP.requireUser(),sb=AIVIP.sb();let profile=null,thread=null,messages=[],replyTo=null,channel=null;
+function txt(m){return m.is_deleted?'삭제된 메시지입니다.':(m.body||'')}
+function render(){
+ const map=new Map(messages.map(x=>[x.id,x]));
+ document.getElementById('chatList').innerHTML=messages.length?messages.map(m=>{
+  const mine=m.sender_role==='user';const rep=m.reply_to?map.get(m.reply_to):null;
+  return `<div class="msg ${mine?'mine':''} ${m.sender_role==='admin'?'admin':''}"><div class="vip-avatar sm">${m.sender_role==='admin'?'👑':AIVIP.escape(profile?.avatar_key||'🐼')}</div><div class="msg-body"><div class="msg-name">${m.sender_role==='admin'?'관리자':AIVIP.escape(profile?.nickname||'나')}</div><div class="msg-bubble">${rep?`<div class="reply-box">${AIVIP.escape(txt(rep)).slice(0,70)}</div>`:''}${m.is_deleted?'<span style="color:#99a2ad">삭제된 메시지입니다.</span>':AIVIP.escape(m.body||'')}${!m.is_deleted&&m.image_url?`<img class="msg-photo" src="${AIVIP.escape(m.image_url)}" onclick="window.open(this.src,'_blank')">`:''}</div><div class="msg-time">${AIVIP.time(m.created_at)}</div>${!m.is_deleted?`<div class="msg-tools"><button onclick="setReply('${m.id}')">답장</button>${mine?`<button onclick="deleteMsg('${m.id}')">삭제</button>`:''}</div>`:''}</div></div>`;
+ }).join(''):'<div class="vip-empty">첫 문의를 남겨보세요.</div>';
+ const el=document.getElementById('chatList');el.scrollTop=el.scrollHeight;
+}
+async function ensureThread(){
+ profile=await AIVIP.ensureProfile(user);let r=await sb.from('vip_support_threads').select('*').eq('user_id',user.id).maybeSingle();
+ if(r.error)throw r.error;if(!r.data){r=await sb.from('vip_support_threads').insert({user_id:user.id}).select('*').single();if(r.error)throw r.error}thread=r.data;document.getElementById('threadStatus').textContent=`상담 상태 · ${thread.status}`;await sb.from('vip_support_threads').update({unread_user:0}).eq('id',thread.id);
+}
+async function load(){
+ await ensureThread();const r=await sb.from('vip_support_messages').select('*').eq('thread_id',thread.id).order('created_at',{ascending:true}).limit(200);if(r.error)throw r.error;messages=r.data||[];render();
+}
+window.setReply=id=>{replyTo=id;document.getElementById('replyText').textContent='답장 · '+txt(messages.find(x=>x.id===id)).slice(0,70);document.getElementById('replyBar').classList.add('show')};
+window.deleteMsg=async id=>{if(!confirm('이 메시지를 삭제하시겠습니까?'))return;await sb.from('vip_support_messages').update({is_deleted:true,deleted_at:new Date().toISOString(),deleted_by:'user',body:null,image_url:null}).eq('id',id).eq('sender_user_id',user.id);};
+document.getElementById('cancelReply').onclick=()=>{replyTo=null;document.getElementById('replyBar').classList.remove('show')};
+async function send(imageUrl=null){const body=document.getElementById('message').value.trim();if(!body&&!imageUrl)return;const r=await sb.from('vip_support_messages').insert({thread_id:thread.id,sender_user_id:user.id,sender_role:'user',message_type:imageUrl?'image':'text',body:body||null,image_url:imageUrl,reply_to:replyTo});if(r.error)return alert(r.error.message);document.getElementById('message').value='';replyTo=null;document.getElementById('replyBar').classList.remove('show')}
+document.getElementById('sendBtn').onclick=()=>send();document.getElementById('message').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}};
+document.getElementById('photoBtn').onclick=()=>document.getElementById('file').click();document.getElementById('file').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{await send(await AIVIP.uploadImage(f,'support'))}catch(err){alert(err.message)}e.target.value=''};
+document.getElementById('btnNotify').onclick=async()=>{const p=await AIVIPNotify.requestPermission();alert(p==='granted'?'1:1 답변 알림이 허용되었습니다.':'브라우저 알림 권한을 확인해주세요.')};
+(async()=>{if(!user)return;await load();channel=sb.channel('vip-support-'+user.id).on('postgres_changes',{event:'*',schema:'public',table:'vip_support_messages'},p=>{if(p.new?.thread_id===thread.id||p.old?.thread_id===thread.id)load().catch(console.error)}).subscribe()})().catch(e=>alert('VIP SQL 설정을 확인해주세요. · '+e.message));
+</script></body></html>

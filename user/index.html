@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI 프로세스 - 로그인</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../shared/theme.css?v=20260815-1128" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon.png" />
+  <meta name="theme-color" content="#0a1120" />
+</head>
+
+<body class="auth-page auth-login-page">
+  <main class="login-stage">
+    <section class="login-card" aria-label="로그인">
+      <div class="login-card-head">
+        <div class="login-kicker">AI 프로세스</div>
+        <h1>로그인</h1>
+        <p>아이디와 비밀번호를 입력해 투자 현황을 확인하세요.</p>
+      </div>
+
+      <div class="auth-form">
+        <label class="auth-label" for="loginId">아이디</label>
+        <input class="auth-input" id="loginId" type="text" placeholder="아이디를 입력하세요" autocomplete="username" />
+
+        <label class="auth-label" for="loginPw">비밀번호</label>
+        <div class="auth-password">
+          <input class="auth-input" id="loginPw" type="password" placeholder="비밀번호를 입력하세요" autocomplete="current-password" />
+          <button class="auth-eye" id="togglePw" type="button" aria-label="비밀번호 보기" title="비밀번호 보기">
+            <svg class="eye-open" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6S2.5 12 2.5 12Z"></path>
+              <circle cx="12" cy="12" r="2.7"></circle>
+            </svg>
+            <svg class="eye-closed" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 3l18 18"></path>
+              <path d="M10.6 6.2A10.9 10.9 0 0 1 12 6c6 0 9.5 6 9.5 6a16.5 16.5 0 0 1-2.4 3.1"></path>
+              <path d="M6.2 6.2C3.9 7.8 2.5 12 2.5 12s3.5 6 9.5 6a9.7 9.7 0 0 0 3.1-.5"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="auth-actions">
+          <button class="auth-btn primary" id="btnLogin" type="button">로그인</button>
+          <button class="auth-btn" id="btnGoSignup" type="button">회원가입</button>
+        </div>
+
+        <div class="auth-msg err" id="errorBox"></div>
+      </div>
+
+    </section>
+  </main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../shared/config.js"></script>
+  <script src="../shared/sb.js"></script>
+  <script src="../shared/app.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const loginId = document.getElementById('loginId');
+      const loginPw = document.getElementById('loginPw');
+      const errorBox = document.getElementById('errorBox');
+      const btnLogin = document.getElementById('btnLogin');
+      const btnGoSignup = document.getElementById('btnGoSignup');
+      const togglePw = document.getElementById('togglePw');
+
+      const sb = (window.aiProcessor && typeof window.aiProcessor.sb === 'function')
+        ? window.aiProcessor.sb()
+        : null;
+
+      if (!sb || typeof sb.from !== 'function') {
+        errorBox.textContent =
+          '초기화 오류: Supabase 연결이 준비되지 않았습니다.\n' +
+          'shared/config.js / shared/sb.js 로딩을 확인하세요.';
+        console.error('[AI 프로세스] sb init failed:', sb);
+        return;
+      }
+
+      togglePw?.addEventListener('click', () => {
+        const show = loginPw.type === 'password';
+        loginPw.type = show ? 'text' : 'password';
+        togglePw.classList.toggle('is-visible', show);
+        togglePw.setAttribute('aria-label', show ? '비밀번호 숨기기' : '비밀번호 보기');
+        togglePw.setAttribute('title', show ? '비밀번호 숨기기' : '비밀번호 보기');
+      });
+
+
+      // 입력칸 클릭/터치는 입력 포커스만 처리하고 다른 버튼 이벤트로 전달하지 않습니다.
+      [loginId, loginPw].forEach((el) => {
+        el.addEventListener('click', (e) => e.stopPropagation());
+        el.addEventListener('pointerdown', (e) => e.stopPropagation());
+        el.addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
+      });
+
+      async function login() {
+        const username = (loginId.value || '').trim();
+        const password = (loginPw.value || '').trim();
+        errorBox.textContent = '';
+
+        if (!username || !password) {
+          errorBox.textContent = '아이디와 비밀번호를 입력해주세요.';
+          return;
+        }
+
+        const { data, error } = await sb
+          .from('app_users')
+          .select('id, username, password_hash, approved, name, amount, status, realized_amount, role')
+          .eq('username', username)
+          .eq('password_hash', password)
+          .maybeSingle();
+
+        if (error || !data) {
+          console.error('[login] error:', error);
+          errorBox.textContent = '아이디 또는 비밀번호가 올바르지 않습니다.';
+          return;
+        }
+
+        if (data.approved === false) {
+          errorBox.textContent = '관리자 승인 대기 중입니다.';
+          return;
+        }
+
+        const safeUser = { ...data };
+        delete safeUser.password_hash;
+
+        localStorage.setItem('ai_processor_user_logged_in', 'true');
+        localStorage.setItem('ai_processor_current_user', JSON.stringify(safeUser));
+
+        window.location.href = 'dashboard.html';
+      }
+
+      btnLogin.addEventListener('click', login);
+      loginPw.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') login();
+      });
+
+      btnGoSignup.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        window.location.href = 'signup.html';
+      });
+    });
+  </script>
+</body>
+</html>
