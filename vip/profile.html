@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>프로필 / 알림 · AI 프로세스 VIP</title><link rel="stylesheet" href="../shared/vip.css?v=20260929-2"><link rel="stylesheet" href="../shared/vip-signature.css?v=20260929-1"><link rel="stylesheet" href="../shared/vip-premium-v3.css?v=20260929-3"><link rel="stylesheet" href="../shared/vip-v4.css?v=20260930-2"><link rel="stylesheet" href="../shared/vip-final.css?v=20260930-final3"></head><body class="vip-page page-profile">
+<div class="vip-shell">
+<aside class="vip-side">
+  <div class="vip-brand">
+    <span class="crown">♛</span>
+    <strong>AI 프로세스 VIP</strong>
+    <small>PRIVATE COMMUNITY</small>
+  </div>
+  <nav class="vip-nav"><a class="" href="../home/"><span class="ico">01</span><span>홈</span></a><a class="" href="../chat/"><span class="ico">02</span><span>그룹채팅</span></a><a class="" href="../support/"><span class="ico">03</span><span>1:1 문의</span><span data-support-badge class="nav-badge hidden"></span></a><a class="" href="../events/"><span class="ico">04</span><span>이벤트</span></a><a class="" href="../process/"><span class="ico">05</span><span>AI 프로세스</span></a><a class="active" href="../profile/"><span class="ico">06</span><span>프로필 / 알림</span></a></nav>
+  <div class="vip-side-bottom">
+    <div class="vip-promo">
+      <div class="promo-pet"><img src="../shared/avatars-v4/otter.jpg" alt=""></div>
+      <strong>함께 성장하는<br>더 특별한 오늘</strong>
+      <small>편안하게 소통하고<br>필요한 정보만 가까이.</small>
+    </div>
+    <nav class="vip-nav"><button class="vip-logout" data-vip-logout><span class="ico">OUT</span><span>로그아웃</span></button></nav>
+  </div>
+</aside><main class="vip-main">
+<header class="mobile-vip-head">
+  <div class="mobile-brand-row">
+    <a class="mobile-brand-copy" href="../home/"><small>VIP PRIVATE COMMUNITY</small><strong>AI PROCESS VIP</strong></a>
+    <button class="mobile-logout" data-vip-logout type="button">로그아웃</button>
+  </div>
+  <nav class="mobile-core-nav"><a class="mobile-core-tab " href="../chat/"><span class="mobile-tab-dot"></span>그룹채팅</a><a class="mobile-core-tab " href="../events/"><span class="mobile-tab-dot"></span>이벤트</a><a class="mobile-core-tab " href="../process/"><span class="mobile-tab-dot"></span>AI프로세스</a><a class="mobile-core-tab " href="../support/"><span class="mobile-tab-dot"></span>1:1 문의</a></nav>
+  <div class="mobile-profile-strip">
+    <a class="mobile-profile-avatar-link" href="../profile/" aria-label="프로필 변경">
+      <div data-mobile-avatar class="vip-avatar compact"></div>
+    </a>
+    <div class="mobile-profile-copy"><small><span class="online-pip"></span> 온라인</small><strong data-mobile-nickname>VIP MEMBER</strong></div>
+    <div class="mobile-member-count"><span>MEMBERS</span><strong data-vip-member-count>0명</strong></div>
+  </div>
+</header>
+  <section class="vip-hero"><div><div class="hero-kicker">MY VIP PROFILE</div><h1>프로필 / 알림</h1><p>그룹채팅과 1:1 문의에 표시되는 프로필과 알림을 관리합니다.</p></div><div class="hero-mark">ME</div></section>
+  <div class="vip-top"><div><h1 style="font-size:18px">내 프로필 설정</h1><p>이모지 대신 부드러운 2.5D 동물 캐릭터로 구성했습니다.</p></div><button id="saveBtn" class="vip-btn gold">저장</button></div>
+  <section class="vip-card vip-section"><div class="form-grid"><div class="field"><label>닉네임</label><input id="nickname" maxlength="20"></div><div class="field"><label>현재 프로필</label><div id="preview" class="vip-person"></div></div></div></section>
+  <section class="vip-card vip-section"><div class="vip-section-head"><h2>프로필 캐릭터 75종</h2><small>25종 동물 · 동물별 골드 / 블루 / 블랙 3스타일</small></div><div id="avatars" class="profile-grid"></div></section>
+  <section class="vip-card vip-section"><div class="vip-section-head"><h2>알림 설정</h2><small>그룹채팅 일반 메시지는 알림을 보내지 않습니다.</small></div>
+    <div class="vip-list">
+      <div class="switch-row"><div><strong>이벤트 / 관리자 공지</strong><small>관리자가 알림 발송을 선택한 이벤트·공지</small></div><button id="swEvents" class="switch"></button></div>
+      <div class="switch-row"><div><strong>1:1 문의 답변</strong><small>관리자가 개인 답변을 보냈을 때</small></div><button id="swSupport" class="switch"></button></div>
+      <div class="switch-row"><div><strong>그룹채팅 일반 메시지</strong><small>메시지가 많아 기본 OFF</small></div><button class="switch" disabled></button></div>
+    </div>
+    <div style="margin-top:10px"><button id="notifyBtn" class="vip-btn">브라우저 알림 허용하기</button></div>
+  </section>
+</main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../shared/config.js?v=20260929-2"></script>
+<script src="../shared/sb.js?v=20260929-2"></script>
+<script src="../shared/app.js?v=20260929-2"></script>
+<script src="../shared/vip-push-config.js?v=20260929-2"></script>
+<script src="../shared/vip.js?v=20261001-avatar75"></script>
+<script src="../shared/vip-notify.js?v=20260929-2"></script>
+
+<script>
+const user=AIVIP.requireUser(),sb=AIVIP.sb();let profile=null,selected='panda-gold';
+function drawPreview(){document.getElementById('preview').innerHTML=`${AIVIP.avatarMarkup(selected)}<div class="vip-person-text"><strong>${AIVIP.escape(document.getElementById('nickname').value||'VIP')}</strong><small>그룹채팅 · 1:1 문의 공통 프로필</small></div>`}
+function drawAvatars(){document.getElementById('avatars').innerHTML=AIVIP.avatarCatalog.map((a,i)=>`<button class="avatar-choice ${a.key===selected?'active':''}" data-i="${i}" title="${AIVIP.escape(a.label)}"><img loading="lazy" src="${AIVIP.avatarSrc(a.key)}" alt="${AIVIP.escape(a.label)}"></button>`).join('');document.querySelectorAll('.avatar-choice').forEach(b=>b.onclick=()=>{selected=AIVIP.avatarCatalog[Number(b.dataset.i)].key;drawAvatars();drawPreview()})}
+function switches(){document.getElementById('swEvents').classList.toggle('on',!!profile.notify_events);document.getElementById('swSupport').classList.toggle('on',!!profile.notify_support)}
+(async()=>{profile=await AIVIP.ensureProfile(user);selected=AIVIP.normalizeAvatarKey(profile.avatar_key||'panda-gold');document.getElementById('nickname').value=profile.nickname||user.name||user.username;drawAvatars();drawPreview();switches()})().catch(e=>alert(e.message));
+document.getElementById('nickname').oninput=drawPreview;
+document.getElementById('swEvents').onclick=()=>{profile.notify_events=!profile.notify_events;switches()};
+document.getElementById('swSupport').onclick=()=>{profile.notify_support=!profile.notify_support;switches()};
+document.getElementById('saveBtn').onclick=async()=>{const nickname=document.getElementById('nickname').value.trim();if(!nickname)return alert('닉네임을 입력해주세요.');const r=await sb.from('vip_profiles').update({nickname,avatar_key:selected,notify_events:profile.notify_events,notify_support:profile.notify_support,updated_at:new Date().toISOString()}).eq('user_id',user.id);if(r.error)return alert(r.error.message);alert('저장되었습니다.')};
+document.getElementById('notifyBtn').onclick=async()=>{const p=await AIVIPNotify.requestPermission();alert(p==='granted'?'브라우저 알림이 허용되었습니다.':'알림 권한을 확인해주세요.')};
+</script></body></html>

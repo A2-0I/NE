@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1:1 문의 · AI 프로세스 VIP</title><link rel="stylesheet" href="../shared/vip.css?v=20260929-2"><link rel="stylesheet" href="../shared/vip-signature.css?v=20260929-1"><link rel="stylesheet" href="../shared/vip-premium-v3.css?v=20260929-3"><link rel="stylesheet" href="../shared/vip-v4.css?v=20260930-1"><link rel="stylesheet" href="../shared/vip-final.css?v=20260930-final3"></head><body class="vip-page page-support">
+<div class="vip-shell">
+<aside class="vip-side">
+  <div class="vip-brand">
+    <span class="crown">♛</span>
+    <strong>AI 프로세스 VIP</strong>
+    <small>PRIVATE COMMUNITY</small>
+  </div>
+  <nav class="vip-nav"><a class="" href="../home/"><span class="ico">01</span><span>홈</span></a><a class="" href="../chat/"><span class="ico">02</span><span>그룹채팅</span></a><a class="active" href="../support/"><span class="ico">03</span><span>1:1 문의</span><span data-support-badge class="nav-badge hidden"></span></a><a class="" href="../events/"><span class="ico">04</span><span>이벤트</span></a><a class="" href="../process/"><span class="ico">05</span><span>AI 프로세스</span></a><a class="" href="../profile/"><span class="ico">06</span><span>프로필 / 알림</span></a></nav>
+  <div class="vip-side-bottom">
+    <div class="vip-promo">
+      <div class="promo-pet"><img src="../shared/avatars-v4/otter.jpg" alt=""></div>
+      <strong>함께 성장하는<br>더 특별한 오늘</strong>
+      <small>편안하게 소통하고<br>필요한 정보만 가까이.</small>
+    </div>
+    <nav class="vip-nav"><button class="vip-logout" data-vip-logout><span class="ico">OUT</span><span>로그아웃</span></button></nav>
+  </div>
+</aside><main class="vip-main">
+<header class="mobile-vip-head">
+  <div class="mobile-brand-row">
+    <a class="mobile-brand-copy" href="../home/"><small>VIP PRIVATE COMMUNITY</small><strong>AI PROCESS VIP</strong></a>
+    <button class="mobile-logout" data-vip-logout type="button">로그아웃</button>
+  </div>
+  <nav class="mobile-core-nav"><a class="mobile-core-tab " href="../chat/"><span class="mobile-tab-dot"></span>그룹채팅</a><a class="mobile-core-tab " href="../events/"><span class="mobile-tab-dot"></span>이벤트</a><a class="mobile-core-tab " href="../process/"><span class="mobile-tab-dot"></span>AI프로세스</a><a class="mobile-core-tab active" href="../support/"><span class="mobile-tab-dot"></span>1:1 문의</a></nav>
+  <div class="mobile-profile-strip">
+    <a class="mobile-profile-avatar-link" href="../profile/" aria-label="프로필 변경">
+      <div data-mobile-avatar class="vip-avatar compact"></div>
+    </a>
+    <div class="mobile-profile-copy"><small><span class="online-pip"></span> 온라인</small><strong data-mobile-nickname>VIP MEMBER</strong></div>
+    <div class="mobile-member-count"><span>MEMBERS</span><strong data-vip-member-count>0명</strong></div>
+  </div>
+</header>
+  <section class="vip-hero">
+    <div><div class="hero-kicker">PRIVATE SUPPORT</div><h1>1:1 문의</h1>
+    <p>관리자와 개인적으로 대화하고 답변을 실시간으로 확인합니다.</p></div><div class="hero-mark">1:1</div>
+  </section>
+  <div class="chat-layout">
+    <section class="chat-stage">
+      <div class="chat-tabs">
+        <a class="chat-tab" href="../chat/"><span class="tab-code">CHAT</span> 그룹채팅</a>
+        <a class="chat-tab active" href="../support/"><span class="tab-code">1:1</span> 1:1 문의</a>
+      </div>
+      <div id="chatList" class="vip-chat-list"><div class="vip-empty">문의방을 준비하는 중입니다.</div></div>
+      <div class="vip-compose">
+        <div id="replyBar" class="compose-reply"><span id="replyText"></span><button id="cancelReply" class="vip-btn">취소</button></div>
+        <div class="compose-row"><input id="file" type="file" accept="image/*" hidden>
+          <button id="photoBtn" class="compose-icon">＋</button>
+          <textarea id="message" placeholder="관리자에게 문의 내용을 입력하세요."></textarea>
+          <button id="sendBtn" class="compose-send">전송</button>
+        </div>
+      </div>
+    </section>
+    <aside class="chat-rail">
+      <section class="rail-card"><div class="rail-title"><span>문의 상태</span><small id="threadStatusSmall">-</small></div>
+        <div class="info-line"><small>현재 상태</small><strong id="threadState">준비중</strong></div>
+        <div class="info-line"><small>답변 알림</small><strong>관리자 답변 시 알림</strong></div>
+        <div style="margin-top:12px"><button id="btnNotify" class="vip-btn gold" style="width:100%">알림 허용</button></div>
+      </section>
+      <section class="rail-card"><div class="rail-title"><span>이용 안내</span></div>
+        <div class="info-line"><small>사진 첨부</small><strong>최대 8MB</strong></div>
+        <div class="info-line"><small>메시지</small><strong>답장 · 본인 삭제 가능</strong></div>
+        <div class="info-line"><small>그룹채팅</small><strong><a href="../chat/" style="color:#e2b75c">바로 이동 →</a></strong></div>
+      </section>
+    </aside>
+  </div>
+</main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../shared/config.js?v=20260929-2"></script>
+<script src="../shared/sb.js?v=20260929-2"></script>
+<script src="../shared/app.js?v=20260929-2"></script>
+<script src="../shared/vip-push-config.js?v=20260929-2"></script>
+<script src="../shared/vip.js?v=20260930-avatar50"></script>
+<script src="../shared/vip-notify.js?v=20260929-2"></script>
+
+<script>
+const user=AIVIP.requireUser(),sb=AIVIP.sb();let profile=null,thread=null,messages=[],replyTo=null,channel=null;
+
+function isNearChatBottom(){
+  const el=document.getElementById('chatList');
+  if(!el)return true;
+  return (el.scrollHeight-el.scrollTop-el.clientHeight)<120;
+}
+function scrollChatToLatest(force=false){
+  const el=document.getElementById('chatList');
+  if(!el)return;
+  if(!force&&!isNearChatBottom())return;
+  const go=()=>{el.scrollTop=el.scrollHeight};
+  go();
+  requestAnimationFrame(go);
+  setTimeout(go,60);
+  setTimeout(go,180);
+}
+
+function txt(m){return m.is_deleted?'삭제된 메시지입니다.':(m.body||'')}
+function render(){
+ const map=new Map(messages.map(x=>[x.id,x]));
+ document.getElementById('chatList').innerHTML=messages.length?messages.map(m=>{
+  const mine=m.sender_role==='user';const rep=m.reply_to?map.get(m.reply_to):null;
+  return `<div class="msg ${mine?'mine':''} ${m.sender_role==='admin'?'admin':''}">${m.sender_role==='admin'?'<div class="vip-avatar sm admin-avatar"><span>AI</span></div>':AIVIP.avatarMarkup(profile?.avatar_key||'🐼','vip-avatar sm')}<div class="msg-body"><div class="msg-name">${m.sender_role==='admin'?'관리자 · ADMIN':AIVIP.escape(profile?.nickname||'나')}</div><div class="msg-bubble">${rep?`<div class="reply-box">${AIVIP.escape(txt(rep)).slice(0,70)}</div>`:''}${m.is_deleted?'<span style="color:#777d85">삭제된 메시지입니다.</span>':AIVIP.escape(m.body||'')}${!m.is_deleted&&m.image_url?`<img class="msg-photo" src="${AIVIP.escape(m.image_url)}" onclick="window.open(this.src,'_blank')">`:''}</div><div class="msg-time">${AIVIP.time(m.created_at)}</div>${!m.is_deleted?`<div class="msg-tools"><button onclick="setReply('${m.id}')">답장</button>${mine?`<button onclick="deleteMsg('${m.id}')">삭제</button>`:''}</div>`:''}</div></div>`;
+ }).join(''):'<div class="vip-empty">아직 문의 내역이 없습니다.<br>첫 문의를 남겨보세요.</div>';
+ scrollChatToLatest(false);
+}
+async function ensureThread(){
+ profile=await AIVIP.ensureProfile(user);
+ const r=await sb.from('vip_support_threads').select('*').eq('user_id',user.id).maybeSingle();
+ if(r.error)throw r.error;
+ thread=r.data||null;
+ if(thread){
+   document.getElementById('threadState').textContent=thread.status;
+   document.getElementById('threadStatusSmall').textContent=thread.status;
+   await sb.from('vip_support_threads').update({unread_user:0}).eq('id',thread.id);
+ }else{
+   document.getElementById('threadState').textContent='문의 전';
+   document.getElementById('threadStatusSmall').textContent='문의 전';
+ }
+}
+async function load(forceLatest=false){
+ await ensureThread();
+ if(!thread){
+   messages=[];
+   render();
+   scrollChatToLatest(forceLatest);
+   return;
+ }
+ const r=await sb.from('vip_support_messages').select('*').eq('thread_id',thread.id).order('created_at',{ascending:true}).limit(200);
+ if(r.error)throw r.error;
+ messages=r.data||[];
+ render();
+ scrollChatToLatest(forceLatest);
+}
+window.setReply=id=>{replyTo=id;document.getElementById('replyText').textContent='답장 · '+txt(messages.find(x=>x.id===id)).slice(0,70);document.getElementById('replyBar').classList.add('show')};
+window.deleteMsg=async id=>{if(!confirm('이 메시지를 삭제하시겠습니까?'))return;await sb.from('vip_support_messages').update({is_deleted:true,deleted_at:new Date().toISOString(),deleted_by:'user',body:null,image_url:null}).eq('id',id).eq('sender_user_id',user.id);};
+document.getElementById('cancelReply').onclick=()=>{replyTo=null;document.getElementById('replyBar').classList.remove('show')};
+async function send(imageUrl=null){
+ const body=document.getElementById('message').value.trim();
+ if(!body&&!imageUrl)return;
+
+ if(!thread){
+   const created=await sb.from('vip_support_threads').insert({user_id:user.id}).select('*').single();
+   if(created.error)return alert(created.error.message);
+   thread=created.data;
+   document.getElementById('threadState').textContent=thread.status;
+   document.getElementById('threadStatusSmall').textContent=thread.status;
+ }
+
+ const r=await sb.from('vip_support_messages').insert({
+   thread_id:thread.id,
+   sender_user_id:user.id,
+   sender_role:'user',
+   message_type:imageUrl?'image':'text',
+   body:body||null,
+   image_url:imageUrl,
+   reply_to:replyTo
+ });
+ if(r.error)return alert(r.error.message);
+ document.getElementById('message').value='';
+ replyTo=null;
+ scrollChatToLatest(true);
+ document.getElementById('replyBar').classList.remove('show');
+}
+document.getElementById('sendBtn').onclick=()=>send();document.getElementById('message').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}};
+document.getElementById('photoBtn').onclick=()=>document.getElementById('file').click();
+document.getElementById('file').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{await send(await AIVIP.uploadImage(f,'support'))}catch(err){alert(err.message)}e.target.value=''};
+document.getElementById('btnNotify').onclick=async()=>{const p=await AIVIPNotify.requestPermission();alert(p==='granted'?'1:1 답변 알림이 허용되었습니다.':'브라우저 알림 권한을 확인해주세요.')};
+(async()=>{if(!user)return;await load(true);channel=sb.channel('vip-support-'+user.id).on('postgres_changes',{event:'*',schema:'public',table:'vip_support_messages'},p=>{if(thread&&(p.new?.thread_id===thread.id||p.old?.thread_id===thread.id)){const follow=isNearChatBottom();load(follow).catch(console.error)}}).subscribe()})().catch(e=>alert('VIP 설정을 확인해주세요. · '+e.message));
+</script></body></html>

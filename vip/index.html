@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI 프로세스 VIP</title>
+<link rel="stylesheet" href="../shared/vip.css?v=20260929-2">
+<link rel="stylesheet" href="../shared/vip-signature.css?v=20260929-1">
+<link rel="stylesheet" href="../shared/vip-premium-v3.css?v=20260929-3">
+<link rel="stylesheet" href="../shared/vip-v4.css?v=20260930-1">
+<link rel="stylesheet" href="../shared/vip-final.css?v=20260930-final3">
+</head>
+<body class="vip-page page-home page-home-v5">
+<div class="vip-shell">
+<aside class="vip-side">
+  <div class="vip-brand">
+    <span class="crown">♛</span>
+    <strong>AI 프로세스 VIP</strong>
+    <small>PRIVATE COMMUNITY</small>
+  </div>
+  <nav class="vip-nav">
+    <a class="active" href="../home/"><span class="ico">01</span><span>홈</span></a>
+    <a href="../chat/"><span class="ico">02</span><span>그룹채팅</span></a>
+    <a href="../support/"><span class="ico">03</span><span>1:1 문의</span><span data-support-badge class="nav-badge hidden"></span></a>
+    <a href="../events/"><span class="ico">04</span><span>이벤트</span></a>
+    <a href="../process/"><span class="ico">05</span><span>AI 프로세스</span></a>
+    <a href="../profile/"><span class="ico">06</span><span>프로필 / 알림</span></a>
+  </nav>
+  <div class="vip-side-bottom">
+    <div class="vip-promo">
+      <div class="promo-pet"><img src="../shared/avatars-v4/otter.jpg" alt=""></div>
+      <strong>함께 성장하는<br>더 특별한 오늘</strong>
+      <small>VIP 커뮤니티와 AI 프로세스를<br>한 공간에서 이용하세요.</small>
+    </div>
+    <nav class="vip-nav"><button class="vip-logout" data-vip-logout><span class="ico">OUT</span><span>로그아웃</span></button></nav>
+  </div>
+</aside>
+
+<main class="vip-main home-v5-main">
+<header class="mobile-vip-head">
+  <div class="mobile-brand-row">
+    <a class="mobile-brand-copy" href="../home/"><small>Private Community</small><strong>AI PROCESS <em>VIP</em></strong></a>
+    <button class="mobile-logout" data-vip-logout type="button">로그아웃</button>
+  </div>
+  <nav class="mobile-core-nav">
+    <a class="mobile-core-tab" href="../chat/"><span class="mobile-tab-dot"></span>그룹채팅</a>
+    <a class="mobile-core-tab" href="../events/"><span class="mobile-tab-dot"></span>이벤트</a>
+    <a class="mobile-core-tab" href="../process/"><span class="mobile-tab-dot"></span>AI프로세스</a>
+    <a class="mobile-core-tab" href="../support/"><span class="mobile-tab-dot"></span>1:1 문의</a>
+  </nav>
+  <div class="mobile-profile-strip">
+    <a class="mobile-profile-avatar-link" href="../profile/" aria-label="프로필 변경">
+      <div data-mobile-avatar class="vip-avatar compact"></div>
+    </a>
+    <div class="mobile-profile-copy"><small><span class="online-pip"></span> 온라인</small><strong data-mobile-nickname>VIP MEMBER</strong></div>
+    <div class="mobile-member-count"><span>MEMBERS</span><strong data-vip-member-count>0명</strong></div>
+  </div>
+</header>
+
+<section class="vip-hero home-desktop-hero">
+  <div><div class="hero-kicker">VIP PRIVATE COMMUNITY</div><h1>AI 프로세스 VIP</h1><p>커뮤니티 · 이벤트 · AI 프로세스 · 1:1 문의를 한 곳에서 이용합니다.</p></div>
+  <div class="hero-mark">VIP</div>
+</section>
+
+<div id="notice" class="notice-bar hidden"></div>
+
+<section class="home-v5-welcome">
+  <div id="homeProfileAvatar" class="home-v5-avatar"></div>
+  <div class="home-v5-welcome-copy">
+    <div class="home-v5-name-row"><strong id="homeNickname">VIP MEMBER</strong><span>VIP</span></div>
+    <small><i></i> 온라인</small>
+    <p>오늘도 AI PROCESS와 함께 특별한 하루를 시작하세요.</p>
+  </div>
+  <a href="../profile/" class="home-v5-profile-link">프로필 ›</a>
+</section>
+
+<section class="home-v5-grid">
+  <a class="home-v5-process-card" href="../process/">
+    <div class="home-v5-card-top"><span>AI PROCESS LIVE</span><b>● LIVE</b></div>
+    <div class="home-v5-process-title"><small id="homeProcessName">현재 진행중 프로세스</small><strong id="homeProfit">0원</strong></div>
+    <div class="home-v5-profit-rate" id="homeProfitRate">수익률 계산 중</div>
+    <div class="home-v5-process-metrics">
+      <div><small>투자금</small><strong id="homeAmount">-</strong></div>
+      <div><small>진행률</small><strong id="homeProgressText">-</strong></div>
+      <div><small>상태</small><strong id="homeState">대기</strong></div>
+    </div>
+    <div class="home-v5-progress"><i id="homeProgress"></i></div>
+    <div class="home-v5-card-foot"><span>AI 프로세스 자세히 보기</span><b>›</b></div>
+  </a>
+
+  <a class="home-v5-event-card" href="../events/" id="homeEventCard">
+    <div class="home-v5-event-icon">🎁</div>
+    <div class="home-v5-event-copy">
+      <div class="home-v5-event-kicker"><span id="homeEventBadge">NEXT EVENT</span><small id="homeEventTime">일정 확인</small></div>
+      <strong id="homeEventTitle">VIP 이벤트</strong>
+      <p id="homeEventDesc">현재 진행 중이거나 예정된 이벤트를 확인해보세요.</p>
+    </div>
+    <span class="home-v5-event-arrow">›</span>
+  </a>
+</section>
+
+<section class="home-v5-market">
+  <div class="home-v5-section-head">
+    <div><small>AI MARKET PULSE</small><h2>최근 5분 상승 종목</h2></div>
+    <a href="../process/">전체 보기 ›</a>
+  </div>
+  <div class="home-v5-market-summary">
+    <div><small>상승 종목</small><strong id="homeMarketCount">0</strong></div>
+    <div><small>STOCK</small><strong id="homeMarketStock">0</strong></div>
+    <div><small>CRYPTO</small><strong id="homeMarketCrypto">0</strong></div>
+    <div><small>업데이트</small><strong id="homeMarketTime">-</strong></div>
+  </div>
+  <div id="homeMarketList" class="home-v5-market-list"><div class="home-v5-market-empty">시장 데이터를 불러오는 중입니다.</div></div>
+</section>
+
+<section class="home-v5-bottom-grid">
+  <div class="home-v5-shortcuts">
+    <div class="home-v5-section-head"><div><small>VIP COMMUNITY</small><h2>바로가기</h2></div></div>
+    <div class="home-v5-shortcut-grid">
+      <a href="../chat/"><span>💬</span><strong>그룹채팅</strong><small>VIP 멤버들과 대화</small></a>
+      <a href="../events/"><span>🎁</span><strong>이벤트</strong><small>진행중 이벤트 확인</small></a>
+      <a href="../process/"><span>📈</span><strong>AI 프로세스</strong><small>투자 · 수익 현황</small></a>
+      <a href="../support/"><span>🎧</span><strong>1:1 문의</strong><small id="homeSupportText">관리자 상담</small></a>
+    </div>
+  </div>
+
+  <div class="home-v5-status-card">
+    <div class="home-v5-section-head"><div><small>MY VIP STATUS</small><h2>오늘의 현황</h2></div></div>
+    <div class="home-v5-status-list">
+      <div><span>진행중 AI 프로세스</span><strong id="statProcess">0건</strong></div>
+      <div><span>진행중 이벤트</span><strong id="statEvents">0건</strong></div>
+      <div><span>읽지 않은 1:1 답변</span><strong id="statSupport">0건</strong></div>
+    </div>
+  </div>
+</section>
+</main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../shared/config.js?v=20260929-2"></script>
+<script src="../shared/sb.js?v=20260929-2"></script>
+<script src="../shared/app.js?v=20260929-2"></script>
+<script src="../shared/vip-push-config.js?v=20260929-2"></script>
+<script src="../shared/vip.js?v=20260930-avatar50"></script>
+<script src="../shared/vip-notify.js?v=20260929-2"></script>
+<script>
+(function(){
+ const user=AIVIP.requireUser(); if(!user)return; const sb=AIVIP.sb();
+ const $=id=>document.getElementById(id);
+ const money=n=>Number(n||0).toLocaleString('ko-KR')+'원';
+ const esc=AIVIP.escape;
+ function progress(inv){
+   if(!inv)return 0;
+   if(inv.is_indefinite)return 0;
+   const s=new Date(inv.started_at||inv.created_at).getTime();
+   const e=new Date(inv.ends_at).getTime();
+   if(!s||!e||e<=s)return 0;
+   return Math.max(0,Math.min(100,(Date.now()-s)/(e-s)*100));
+ }
+ function pct(v){ const n=Number(v||0); return (n>=0?'+':'')+n.toFixed(3)+'%'; }
+ function time(v){ return v?AIVIP.clock(v):'-'; }
+ function marketIcon(row){
+   if(row.symbol==='BTC')return '₿'; if(row.symbol==='SOL')return 'S'; if(row.symbol==='NVDA')return 'N'; if(row.symbol==='TSLA')return 'T'; return (row.symbol||'?').slice(0,2);
+ }
+ function marketClass(row){ return row.asset_type==='crypto'?'crypto':'stock'; }
+ async function init(){
+   try{
+     const profile=await AIVIP.ensureProfile(user);
+     $('homeNickname').textContent=profile.nickname||user.name||user.username||'VIP MEMBER';
+     $('homeProfileAvatar').innerHTML=AIVIP.avatar(profile,'vip-avatar home-v5-avatar-img');
+
+     const [invR,evR,thR,marketR]=await Promise.all([
+       sb.from('app_investments').select('id,display_name,processor_code,amount,realized_amount,status,started_at,ends_at,created_at,is_indefinite,target_return_pct').eq('user_id',user.id).eq('status','진행중').order('started_at',{ascending:true}),
+       sb.from('vip_events').select('*').order('starts_at',{ascending:true}).limit(50),
+       sb.from('vip_support_threads').select('unread_user').eq('user_id',user.id).maybeSingle(),
+       sb.from('app_market_5m').select('*').order('sort_order',{ascending:true})
+     ]);
+
+     const invs=invR.data||[]; const inv=invs[0];
+     $('statProcess').textContent=invs.length+'건';
+     if(inv){
+       const p=progress(inv); const rate=Number(inv.amount)>0?Number(inv.realized_amount||0)/Number(inv.amount)*100:0;
+       $('homeProcessName').textContent=inv.display_name||inv.processor_code||'AI 프로세스';
+       $('homeProfit').textContent=(Number(inv.realized_amount||0)>=0?'+':'')+money(inv.realized_amount||0);
+       $('homeProfitRate').textContent='현재 수익률 '+(rate>=0?'+':'')+rate.toFixed(2)+'%';
+       $('homeAmount').textContent=money(inv.amount);
+       $('homeProgressText').textContent=inv.is_indefinite?'기간 미정':Math.round(p)+'%';
+       $('homeState').textContent='진행중';
+       $('homeProgress').style.width=(inv.is_indefinite?34:p)+'%';
+     }else{
+       $('homeProcessName').textContent='진행중 AI 프로세스 없음';
+       $('homeProfit').textContent='0원'; $('homeProfitRate').textContent='새로운 진행을 기다리는 중';
+       $('homeAmount').textContent='-'; $('homeProgressText').textContent='-'; $('homeState').textContent='대기'; $('homeProgress').style.width='0%';
+     }
+
+     const unread=Number(thR.data?.unread_user||0);
+     $('statSupport').textContent=unread+'건';
+     $('homeSupportText').textContent=unread>0?`새 답변 ${unread}건`:'관리자 상담';
+
+     const events=evR.data||[]; const now=Date.now();
+     const live=events.find(e=>e.status==='진행중'&&(!e.starts_at||new Date(e.starts_at).getTime()<=now)&&(!e.ends_at||new Date(e.ends_at).getTime()>now));
+     const next=live||events.find(e=>e.starts_at&&new Date(e.starts_at).getTime()>now)||events.find(e=>e.status==='진행중');
+     $('statEvents').textContent=live? '1건' : (events.filter(e=>e.status==='진행중').length+'건');
+     if(next){
+       $('homeEventBadge').textContent=live?'LIVE EVENT':'NEXT EVENT';
+       $('homeEventTime').textContent=live?(next.ends_at?time(next.ends_at)+'까지':'진행중'):(next.starts_at?time(next.starts_at)+' 시작':'예정');
+       $('homeEventTitle').textContent=next.title||'VIP 이벤트';
+       $('homeEventDesc').textContent=next.description||'VIP 이벤트가 준비되어 있습니다.';
+       $('homeEventCard').href='../events/#event-'+next.id;
+     }
+
+     const rows=(marketR.data||[]).filter(r=>!r.last_error&&Number(r.change_pct)>0).sort((a,b)=>Number(b.change_pct)-Number(a.change_pct));
+     $('homeMarketCount').textContent=rows.length;
+     $('homeMarketStock').textContent=rows.filter(r=>r.asset_type==='stock').length;
+     $('homeMarketCrypto').textContent=rows.filter(r=>r.asset_type==='crypto').length;
+     const latest=rows.filter(r=>r.bar_time).sort((a,b)=>new Date(b.bar_time)-new Date(a.bar_time))[0];
+     $('homeMarketTime').textContent=latest?time(latest.bar_time):'-';
+     const base=Number(inv?.amount||0);
+     $('homeMarketList').innerHTML=rows.length?rows.slice(0,4).map(r=>{
+       const est=base*Number(r.change_pct||0)/100;
+       return `<a class="home-v5-market-row" href="../process/"><span class="home-v5-market-icon ${marketClass(r)}">${esc(marketIcon(r))}</span><span class="home-v5-market-copy"><strong>${esc(r.display_name||r.symbol)}</strong><small>${esc(r.symbol)} · ${r.asset_type==='crypto'?'CRYPTO':'STOCK'}</small></span><span class="home-v5-market-gain"><b>${pct(r.change_pct)}</b><small>${base>0?'투자금 기준 +'+money(est):'5분 상승'}</small></span><span class="home-v5-spark">⌁</span></a>`;
+     }).join(''):'<div class="home-v5-market-empty">현재 최근 5분 기준 상승 종목이 없습니다.</div>';
+   }catch(e){
+     console.error(e); const n=$('notice'); n.textContent='VIP 데이터를 불러오지 못했습니다. · '+(e.message||e); n.classList.remove('hidden');
+   }
+ }
+ init();
+})();
+</script>
+</body>
+</html>

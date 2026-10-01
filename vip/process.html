@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI 프로세스 · AI 프로세스 VIP</title>
+<link rel="stylesheet" href="../shared/vip.css?v=20260929-3">
+<link rel="stylesheet" href="../shared/vip-process.css?v=20260930-market1">
+<link rel="stylesheet" href="../shared/vip-signature.css?v=20260929-1"><link rel="stylesheet" href="../shared/vip-premium-v3.css?v=20260929-3"><link rel="stylesheet" href="../shared/vip-v4.css?v=20260930-1"><link rel="stylesheet" href="../shared/vip-final.css?v=20260930-final3"></head>
+<body class="vip-page page-process">
+<div class="vip-shell">
+<aside class="vip-side">
+  <div class="vip-brand">
+    <span class="crown">♛</span>
+    <strong>AI 프로세스 VIP</strong>
+    <small>PRIVATE COMMUNITY</small>
+  </div>
+
+  <nav class="vip-nav">
+    <a href="../home/"><span class="ico">01</span><span>홈</span></a>
+    <a href="../chat/"><span class="ico">02</span><span>그룹채팅</span></a>
+    <a href="../support/"><span class="ico">03</span><span>1:1 문의</span><span data-support-badge class="nav-badge hidden"></span></a>
+    <a href="../events/"><span class="ico">04</span><span>이벤트</span></a>
+    <a class="active" href="../process/"><span class="ico">05</span><span>AI 프로세스</span></a>
+    <a href="../profile/"><span class="ico">06</span><span>프로필 / 알림</span></a>
+  </nav>
+
+  <div class="vip-side-bottom">
+    <div class="vip-promo">
+      <div class="promo-pet"><img src="../shared/avatars-v4/otter.jpg" alt=""></div>
+      <strong>함께 성장하는<br>더 특별한 오늘</strong>
+      <small>AI 프로세스의 진행 현황과<br>수익 흐름을 한눈에 확인하세요.</small>
+    </div>
+    <nav class="vip-nav">
+      <button id="btnLogout" class="vip-logout" type="button">
+        <span class="ico">OUT</span><span>로그아웃</span>
+      </button>
+    </nav>
+  </div>
+</aside>
+<main class="vip-main process-page">
+<header class="mobile-vip-head">
+  <div class="mobile-brand-row">
+    <a class="mobile-brand-copy" href="../home/"><small>VIP PRIVATE COMMUNITY</small><strong>AI PROCESS VIP</strong></a>
+    <button class="mobile-logout" data-vip-logout type="button">로그아웃</button>
+  </div>
+  <nav class="mobile-core-nav"><a class="mobile-core-tab " href="../chat/"><span class="mobile-tab-dot"></span>그룹채팅</a><a class="mobile-core-tab " href="../events/"><span class="mobile-tab-dot"></span>이벤트</a><a class="mobile-core-tab active" href="../process/"><span class="mobile-tab-dot"></span>AI프로세스</a><a class="mobile-core-tab " href="../support/"><span class="mobile-tab-dot"></span>1:1 문의</a></nav>
+  <div class="mobile-profile-strip">
+    <a class="mobile-profile-avatar-link" href="../profile/" aria-label="프로필 변경">
+      <div data-mobile-avatar class="vip-avatar compact"></div>
+    </a>
+    <div class="mobile-profile-copy"><small><span class="online-pip"></span> 온라인</small><strong data-mobile-nickname>VIP MEMBER</strong></div>
+    <div class="mobile-member-count"><span>MEMBERS</span><strong data-vip-member-count>0명</strong></div>
+  </div>
+</header>
+
+  <section class="vip-hero">
+    <div>
+      <div class="hero-kicker">AI PROCESS · VIP MEMBER</div>
+      <h1>AI 프로세스</h1>
+      <p>기존 AI 프로세스의 투자 현황 · 실시간 수익 · 안내 · 내 정보를 같은 VIP 공간에서 확인합니다.</p>
+    </div>
+    <div class="hero-mark">AI</div>
+  </section>
+
+  <div class="process-tabs">
+    <button id="tabStatus" class="active" type="button">내 투자</button>
+    <button id="tabIntro" type="button">안내</button>
+    <button id="tabAccount" type="button">내 정보</button>
+  </div>
+
+<section id="sectionStatus" class="section card">
+  <div class="selector-head"><h3>내 투자 내역</h3><span>투자를 선택하면 아래 상세 정보가 바뀝니다.</span></div>
+  <div class="filter-row"><button id="filterRunning" class="active">진행중</button><button id="filterDone">진행 완료</button></div>
+  <div id="investmentStrip" class="investment-strip"></div>
+  <div id="noInvestment" class="empty hidden">표시할 투자가 없습니다.</div>
+
+  <div id="investmentDetail" class="detail hidden">
+    <div class="detail-head"><div class="detail-title-row"><h2 id="invCode">-</h2><button id="btnRenameInvestment" class="rename-investment" type="button" title="이름 변경" aria-label="이름 변경">✎</button></div></div>
+    <div class="schedule" id="investmentSchedule">
+      <div class="schedule-top">
+        <div class="duration"><span>진행 시간</span><strong id="invPeriod">최소 1시간 ~ 최대 30일</strong></div>
+        <div class="statebox">
+          <span>현재 상태</span>
+          <div class="state-inline"><strong id="invStateBig">-</strong><span id="invStateBadge" class="state-pill done">-</span></div>
+          <div class="state-finance">
+            <div><span>투자금액</span><b id="invAmount">- 원</b></div>
+            <div><span>수익금액</span><b id="invProfit" class="green">- 원</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="dates range-dates"><div class="date"><span>시작</span><strong id="invStart">-</strong></div><div class="date rate-wide"><span>예상 수익률 범위</span><strong id="invRate">10% ~ 900% 이상</strong></div></div>
+      <div class="progress-head"><span>진행률</span><strong id="invProgressText">-</strong></div><div class="progress"><i id="invProgress"></i></div>
+    </div>
+    <div class="steps compact-steps"><div class="step" data-step="wait"><small>READY</small><b>대기중</b></div><div class="step" data-step="run"><small>RUNNING</small><b>진행중</b></div><div class="step" data-step="done"><small>COMPLETE</small><b>진행 완료</b></div></div>
+  </div>
+</section>
+
+<section id="sectionMarket" class="section card market-pulse-section">
+  <div class="market-pulse-head">
+    <div>
+      <div class="market-eyebrow">AI MARKET PULSE</div>
+      <h3>5분 시장 현황</h3>
+      <p>최근 5분 기준 상승 중인 주식 · 코인만 표시합니다.</p>
+    </div>
+    <div class="market-live-wrap">
+      <span class="market-live-dot"></span><strong>LIVE</strong>
+      <small>5분 자동 갱신</small>
+    </div>
+  </div>
+  <div class="market-summary">
+    <div><span>선택 투자금</span><strong id="marketBaseAmount">- 원</strong></div>
+    <div><span>상승 종목</span><strong id="marketPositiveCount">0</strong></div>
+    <div><span>최근 데이터</span><strong id="marketUpdatedAt">-</strong></div>
+  </div>
+  <div id="marketList" class="market-list">
+    <div class="market-loading">시장 데이터를 불러오는 중입니다.</div>
+  </div>
+  <div class="market-footnote">※ 표시 금액은 선택한 투자금에 최근 5분 변동률을 단순 적용한 환산값이며, 실제 AI 프로세스 수익금과는 별도입니다.</div>
+</section>
+
+<section id="sectionRealtime" class="section card">
+  <div class="realtime-head"><div><h3>실시간 수익 현황</h3><p>선택한 투자 기준의 수익과 그래프입니다.</p></div><div class="toggle"><button id="toggleToday" class="active">오늘 수익</button><button id="toggleTotal">누적 수익</button></div></div>
+  <div class="realtime-values"><div class="mini"><span id="rtProfitLabel">수익 (오늘)</span><strong class="green" id="rtProfit">- 원</strong></div><div class="mini"><span>총 금액 (투자 + 수익)</span><strong id="rtTotal">- 원</strong></div></div>
+  <div class="chart-wrap"><div class="chart-title"><span id="chartTitle">이 투자의 수익 그래프 (오늘)</span><small id="chartHint">최근 데이터 기준</small></div><canvas id="profitChart" width="920" height="180"></canvas></div>
+  <div class="chart-wrap"><div class="chart-title"><span id="timelineTitle">수익 로그 (오늘)</span><small>선택한 투자 기준</small></div><div id="profitTimeline" class="timeline"></div></div>
+  <div class="chart-wrap"><div class="chart-title"><span>투자금 변경 내역</span><small>추가 투자 시 기존 종료일 유지</small></div><div id="amountTimeline" class="timeline"></div></div>
+</section>
+
+<section id="sectionIntro" class="section card hidden">
+  <div class="section-title">안내</div>
+  <div class="section-sub">AI 프로세스의 역할과 투자 진행 흐름을 상세하게 확인할 수 있습니다.</div>
+  <div class="guide-grid">
+    <div class="guide-col">
+      <h3>AI 프로세스</h3>
+      <p>AI 프로세스는 대량의 시장 데이터와 알고리즘을 활용해 시장 흐름을 분석하고, 여러 종목과 자산군에 분산 투자하는 AI 투자 프로세스입니다. 사용자는 투자 조건을 확인하고, 진행 과정과 결과를 한 화면에서 확인할 수 있습니다.</p>
+
+      <h4>AI가 하는 일</h4>
+      <ul>
+        <li>경제 지표, 뉴스, 시황 데이터를 종합적으로 스캔</li>
+        <li>최대 30개 내외 종목으로 포트폴리오 자동 구성</li>
+        <li>시장 변화와 손익·변동성에 따른 투자 비중 조정</li>
+        <li>손익·변동성 데이터를 기반으로 전략을 반복 분석</li>
+      </ul>
+
+      <h4>투자 진행</h4>
+      <p>개발자님과 상담 후, <strong>추천 진행 시간 및 예상 수익률을 안내받아 투자 진행을 AI에게 맡깁니다.</strong> 진행 시간은 <strong>최소 1시간 ~ 최대 30일</strong>이며, 상담 내용을 바탕으로 최종 진행 조건이 결정됩니다.</p>
+      <p class="guide-note">투자금, 진행 시간, 예상 수익률은 각 투자마다 별도로 설정되며 진행 중인 투자와 완료된 투자를 각각 확인할 수 있습니다.</p>
+
+      <h4>진행 상태 안내</h4>
+      <div class="guide-steps">
+        <div class="gstep"><div class="gnum">01</div><div><b>대기중 · READY</b><p>투자금과 진행 조건이 확정되기 전 단계입니다. 투자가 확정되면 다음 단계로 이동합니다.</p></div></div>
+        <div class="gstep"><div class="gnum">02</div><div><b>진행중 · RUNNING</b><p>설정된 투자금과 진행 조건에 따라 AI 투자가 진행되는 단계입니다.</p></div></div>
+        <div class="gstep"><div class="gnum">03</div><div><b>진행 완료 · COMPLETE</b><p>설정된 투자 진행이 완료된 상태입니다. 수익 정산을 준비합니다.</p></div></div>
+      </div>
+
+      <h4>이런 분께 적합합니다</h4>
+      <ul>
+        <li>세부 종목 선택보다 전체 전략과 결과에 집중하고 싶은 분</li>
+        <li>최소 1시간 ~ 최대 30일 구간의 투자를 선호하는 분</li>
+        <li>AI 기반 의사결정과 분산 투자를 경험하고 싶은 분</li>
+      </ul>
+    </div>
+
+    <div class="guide-col">
+      <div class="scenario-head">
+        <h3>투자 예시 시나리오</h3>
+        <span class="scenario-badge">전문 운영 관점</span>
+      </div>
+      <p class="guide-note">예시 · 50,000원을 AI에 맡기는 경우</p>
+      <div class="guide-steps scenario-steps">
+        <div class="gstep">
+          <div class="gnum">01</div>
+          <div><b>상담 및 조건 설정</b><p>개발자님과 상담 후 추천 진행 시간과 예상 수익률을 안내받습니다. 50,000원의 투자금과 최종 진행 조건이 확정되면 해당 투자는 <strong>진행중</strong> 상태로 전환됩니다.</p></div>
+        </div>
+        <div class="gstep">
+          <div class="gnum">02</div>
+          <div><b>시장·종목 스캔</b><p>최근 수 시간부터 중장기 가격 흐름, 거래량, 변동성, 뉴스·이슈 등의 데이터를 수집하고 과거 학습 데이터와 현재 시장 상황을 비교해 효율이 높은 섹터와 종목을 선별합니다.</p></div>
+        </div>
+        <div class="gstep">
+          <div class="gnum">03</div>
+          <div><b>포트폴리오 구성</b><p>투자금 일부는 기본 안전 구간, 일부는 공격 구간으로 나누어 비중을 설정합니다. 예를 들어 변동성이 낮은 자산 60%와 높은 자산 40%를 조합해 10~20개 내외 종목을 구성하고, 예상 수익과 리스크에 따라 비중을 조정합니다.</p></div>
+        </div>
+        <div class="gstep">
+          <div class="gnum">04</div>
+          <div><b>진행 중 리스크 관리</b><p>진행 구간 동안 가격 변화를 모니터링하고, 사전 설정된 손실 한도 또는 급격한 변동이 발생할 경우 비중을 축소하거나 현금 비중을 늘립니다. 특정 종목이나 섹터에 과도하게 집중되지 않도록 비중 상한을 유지합니다.</p></div>
+        </div>
+        <div class="gstep">
+          <div class="gnum">05</div>
+          <div><b>진행 완료 및 정산</b><p>설정된 진행 구간이 종료되면 해당 투자는 <strong>진행 완료</strong> 상태로 전환됩니다. 전체 평가금액과 수익 결과를 정리하고, 진행 중 생성된 성과 데이터는 이후 전략 분석에 반영됩니다.</p></div>
+        </div>
+      </div>
+      <p class="scenario-footer">이 과정에서 사용자는 투자금, 진행 시간, 예상 수익률과 현재 진행 상태를 확인하고, 실제 종목 선택·비중 조정·리스크 관리 과정은 AI 프로세스가 담당하는 구조입니다.</p>
+    </div>
+  </div>
+</section>
+
+<section id="sectionAccount" class="section card account hidden"><div class="account-head"><div><div class="section-title">내 정보</div><div class="section-sub">AI 프로세스에서 사용하는 기본 회원 정보입니다.</div></div><button id="btnSettings" class="btn soft">설정</button></div><div class="account-row"><span>이름</span><strong id="acctName">-</strong></div><div class="account-row"><span>아이디</span><strong id="acctUsername">-</strong></div><div class="account-row"><span>휴대폰</span><strong id="acctPhone">-</strong></div><div class="account-row"><span>총 투자금액</span><strong id="acctAmount">-</strong></div><div class="account-row"><span>총 수익</span><strong class="green" id="acctProfit">-</strong></div></section>
+
+</main>
+</div>
+
+<div class="process-page">
+<div id="settingsModal" class="modal-wrap"><div class="modal"><h3>설정</h3><p>비밀번호를 변경할 수 있습니다.</p><div class="field"><label>새 비밀번호</label><input id="editPw" type="password" placeholder="변경하지 않으려면 비워두세요"></div><div class="modal-actions"><button id="btnSettingsClose" class="btn">취소</button><button id="btnSettingsSave" class="btn soft">저장</button></div></div></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../shared/config.js?v=20260815-1128"></script>
+<script src="../shared/sb.js?v=20260815-1128"></script>
+<script src="../shared/app.js?v=20260815-1128"></script>
+<script src="../shared/vip-push-config.js?v=20260923-1"></script>
+<script src="../shared/vip-notify.js?v=20260923-1"></script>
+<script src="../shared/vip.js?v=20260930-avatar50"></script>
+<script>
+const sb=(window.aiProcessor&&typeof window.aiProcessor.sb==='function')?window.aiProcessor.sb():null;
+let user=null,userRow=null,investments=[],selectedId=null,filterMode='running',profitMode='today',reloadTimer=null,marketRows=[];
+const $=id=>document.getElementById(id); const money=n=>Math.round(Number(n||0)).toLocaleString('ko-KR')+' 원';
+function investmentLabel(i){const n=String(i?.display_name||'').trim();return n||'AI 프로세스 진행 현황'}
+function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+function statusClass(s){return s==='진행중'?'run':s==='대기중'?'wait':'done'};
+function fmtDate(v){if(!v)return '-';const d=new Date(v);if(Number.isNaN(d.getTime()))return '-';return `${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`}
+function durationText(i){if(i.is_indefinite)return '기간 미정';const m=Number(i.duration_minutes||0);if(m%1440===0)return `${m/1440}일 0시간`;if(m%60===0)return `${m/60}시간 0분`;return `${Math.floor(m/60)}시간 ${m%60}분`}
+function assignedText(i){const v=i.target_return_pct;return v==null?'-':`${Number(v).toFixed(2).replace(/\.00$/,'')}%`}
+function progressOf(i){if(i.status==='진행 완료')return 100;if(i.is_indefinite||!i.started_at||!i.ends_at)return 0;const s=new Date(i.started_at).getTime(),e=new Date(i.ends_at).getTime(),n=Date.now();return Math.max(0,Math.min(100,((n-s)/(e-s))*100))}
+function requireLogin(){try{user=JSON.parse(localStorage.getItem('ai_processor_current_user')||'null')}catch{}if(!user){location.href='../user/index.html';return false}return true}
+function setTab(tab){['Status','Intro','Account'].forEach(x=>{$('section'+x)?.classList.toggle('hidden',x.toLowerCase()!==tab);$('tab'+x)?.classList.toggle('active',x.toLowerCase()===tab)});$('sectionMarket')?.classList.toggle('hidden',tab!=='status');$('sectionRealtime')?.classList.toggle('hidden',tab!=='status')}
+async function loadAll(keep=true){if(!sb)return alert('Supabase 연결을 확인해주세요.');const {data:u,error:ue}=await sb.from('app_users').select('*').eq('username',user.username).maybeSingle();if(ue||!u)throw ue||new Error('사용자를 찾을 수 없습니다.');userRow=u;const {data,error}=await sb.from('app_investments').select('*').eq('user_id',u.id).order('created_at',{ascending:false});if(error)throw error;investments=data||[];if(!keep||!investments.some(x=>x.id===selectedId))selectedId=investments.find(x=>x.status==='진행중')?.id||investments[0]?.id||null;renderSelector();renderSelected();fillAccount();subscribeRealtime();loadMarketPulse()}
+function visibleInvestments(){return investments.filter(x=>filterMode==='running'?x.status!=='진행 완료':x.status==='진행 완료')}
+function renderSelector(){const list=visibleInvestments();$('investmentStrip').innerHTML='';$('noInvestment').classList.toggle('hidden',list.length>0);list.forEach(i=>{const b=document.createElement('button');b.className='investment-item'+(i.id===selectedId?' active':'');b.innerHTML=`<div class="inv-top"><div class="inv-title-wrap"><div class="inv-code">${escapeHtml(investmentLabel(i))}</div><span class="inv-name-edit" title="이름 변경" aria-label="이름 변경">✎</span></div><span class="badge ${statusClass(i.status)}">${i.status}</span></div><div class="inv-sub">AI 프로세스 · ${fmtDate(i.started_at)} 시작</div><div class="inv-meta"><span>${money(i.amount)}</span><span class="inv-rate-range"><small>예상 수익률</small><b>10% ~ 900% 이상</b></span></div>`;b.onclick=()=>{selectedId=i.id;renderSelector();renderSelected();renderMarketPulse()};const edit=b.querySelector('.inv-name-edit');if(edit)edit.onclick=e=>{e.stopPropagation();editInvestmentName(i.id)};$('investmentStrip').appendChild(b)});if(list.length&&!list.some(x=>x.id===selectedId)){selectedId=list[0].id;renderSelector();renderSelected()}}
+async function editInvestmentName(id){const i=investments.find(x=>x.id===id);if(!i||!userRow)return;const current=String(i.display_name||'');const next=window.prompt('이 투자에 표시할 이름을 입력해주세요.\n비워두면 기본 이름으로 돌아갑니다.',current);if(next===null)return;const name=next.trim();if(name.length>50)return alert('이름은 최대 50자까지 입력할 수 있습니다.');const {error}=await sb.from('app_investments').update({display_name:name||null}).eq('id',i.id).eq('user_id',userRow.id);if(error){console.error(error);return alert('이름 변경에 실패했습니다. Supabase에 display_name 컬럼이 추가되었는지 확인해주세요.')}i.display_name=name||null;renderSelector();renderSelected()}
+async function renderSelected(){const i=investments.find(x=>x.id===selectedId);$('investmentDetail').classList.toggle('hidden',!i);$('sectionRealtime').classList.toggle('hidden',!i||$('sectionStatus').classList.contains('hidden'));if(!i){drawChart([]);$('profitTimeline').innerHTML='';$('amountTimeline').innerHTML='';renderMarketPulse();return}$('invCode').textContent=investmentLabel(i);$('invAmount').textContent=money(i.amount);const profitNum=Number(i.realized_amount||0);$('invProfit').textContent=(profitNum>=0?'+':'')+money(profitNum);$('invProfit').classList.toggle('green',profitNum>=0);$('invProfit').classList.toggle('red',profitNum<0);$('invPeriod').textContent='최소 1시간 ~ 최대 30일';$('invStateBig').textContent=i.status;$('invStateBadge').textContent=i.status;const sClass=statusClass(i.status);$('invStateBadge').className='state-pill '+sClass;$('investmentSchedule').className='schedule state-'+sClass;$('invStart').textContent=fmtDate(i.started_at);$('invRate').textContent='10% ~ 900% 이상';const p=progressOf(i);$('invProgressText').textContent=i.is_indefinite?(i.status==='진행중'?'진행중':'-'):`${p.toFixed(0)}%`;$('invProgress').style.width=i.is_indefinite?(i.status==='진행중'?'100%':'0%'):`${p}%`;document.querySelectorAll('.step').forEach(x=>x.classList.remove('active'));document.querySelector(`.step[data-step="${i.status==='진행중'?'run':i.status==='진행 완료'?'done':'wait'}"]`)?.classList.add('active');await loadInvestmentLogs(i);renderMarketPulse()}
+function localDayStart(){const d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate()).toISOString()}
+function fmtMarketTime(v){if(!v)return '-';const d=new Date(v);if(Number.isNaN(d.getTime()))return '-';return `${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`}
+function marketPrice(n){const v=Number(n);if(!Number.isFinite(v))return '-';return '$'+v.toLocaleString('en-US',{minimumFractionDigits:v>=100?2:4,maximumFractionDigits:v>=100?2:4})}
+function isMarketFresh(r){if(!r?.bar_time)return false;const age=Date.now()-new Date(r.bar_time).getTime();const limit=r.asset_type==='crypto'?15*60*1000:20*60*1000;return age>=0&&age<=limit}
+async function loadMarketPulse(){if(!sb)return;const {data,error}=await sb.from('app_market_5m').select('symbol,display_name,asset_type,source,current_price,previous_price,change_pct,bar_time,refreshed_at,delay_seconds,sort_order,last_error').order('sort_order',{ascending:true});if(error){console.warn('market pulse:',error);marketRows=[];renderMarketPulse(error);return}marketRows=data||[];renderMarketPulse()}
+function renderMarketPulse(error=null){const list=$('marketList');if(!list)return;const inv=investments.find(x=>x.id===selectedId);const base=Number(inv?.amount||0);$('marketBaseAmount').textContent=inv?money(base):'- 원';if(error){$('marketPositiveCount').textContent='-';$('marketUpdatedAt').textContent='-';list.innerHTML='<div class="market-loading market-error">시장 데이터가 아직 연결되지 않았습니다.<br><small>AI_PROCESS_MARKET_5MIN_SETUP.sql 적용 여부를 확인해주세요.</small></div>';return}const usable=marketRows.filter(r=>!r.last_error&&Number.isFinite(Number(r.change_pct))&&Number(r.change_pct)>0&&isMarketFresh(r)).sort((a,b)=>Number(b.change_pct)-Number(a.change_pct));$('marketPositiveCount').textContent=String(usable.length);const newest=marketRows.filter(r=>r.bar_time).sort((a,b)=>new Date(b.bar_time)-new Date(a.bar_time))[0];$('marketUpdatedAt').textContent=newest?fmtMarketTime(newest.bar_time):'-';if(!marketRows.length){list.innerHTML='<div class="market-loading">수집된 시장 데이터가 없습니다.</div>';return}if(!usable.length){list.innerHTML='<div class="market-loading">현재 최근 5분 기준 상승 종목이 없습니다.</div>';return}list.innerHTML=usable.map(r=>{const pct=Number(r.change_pct);const est=base>0?base*pct/100:0;const cls=r.asset_type==='crypto'?'crypto':'stock';const asset=r.asset_type==='crypto'?'CRYPTO':'STOCK';const delay=Number(r.delay_seconds||0)>0?` · ${Math.round(Number(r.delay_seconds)/60)}분 지연 가능`:'';return `<article class="market-item"><div class="market-symbol ${cls}"><span>${escapeHtml(r.symbol)}</span></div><div class="market-copy"><div class="market-name-row"><strong>${escapeHtml(r.display_name)}</strong><em>${asset}</em></div><small>${escapeHtml(r.source||'')} · ${fmtMarketTime(r.bar_time)}${delay}</small><div class="market-price">${marketPrice(r.current_price)}</div></div><div class="market-change"><small>5분 상승</small><strong>+${pct.toFixed(3)}%</strong><span>${inv?`투자금 기준 +${money(est)}`:'투자 선택 시 환산 표시'}</span></div></article>`}).join('')}
+async function loadInvestmentLogs(i){let q=sb.from('app_profit_logs').select('amount_delta,created_at,source_type').eq('investment_id',i.id).in('source_type',['payout','process_payout']);if(profitMode==='today'){q=q.gte('created_at',localDayStart()).order('created_at',{ascending:true}).limit(1000);}else{q=q.order('created_at',{ascending:false}).limit(200);}const {data,error}=await q;if(error){console.error(error);return}const logs=profitMode==='today'?(data||[]):[...(data||[])].reverse();const profit=logs.reduce((s,x)=>s+Number(x.amount_delta||0),0);const shown=profitMode==='today'?profit:Number(i.realized_amount||0);$('rtProfitLabel').textContent=profitMode==='today'?'수익 (오늘)':'수익 (누적)';$('rtProfit').textContent=(shown>=0?'+':'')+money(shown);$('rtTotal').textContent=money(Number(i.amount||0)+shown);$('chartTitle').textContent=`이 투자의 수익 그래프 (${profitMode==='today'?'오늘':'누적'})`;$('timelineTitle').textContent=`수익 로그 (${profitMode==='today'?'오늘':'최근 기록'})`;let c=profitMode==='today'?0:Number(i.realized_amount||0)-logs.reduce((s,x)=>s+Number(x.amount_delta||0),0);const series=[c];logs.forEach(x=>{c+=Number(x.amount_delta||0);series.push(c)});drawChart(series);const desc=[...logs].reverse().slice(0,60);$('profitTimeline').innerHTML=desc.length?desc.map(x=>`<div class="timeline-row"><time>${fmtDate(x.created_at)}</time><span>${Number(x.amount_delta)>=0?'수익':'손실'}</span><strong class="${Number(x.amount_delta)>=0?'up':'down'}">${Number(x.amount_delta)>=0?'+':''}${money(x.amount_delta)}</strong></div>`).join(''):'<div class="empty">수익 기록이 없습니다.</div>';const {data:al}=await sb.from('app_investment_amount_logs').select('delta,note,created_at').eq('investment_id',i.id).order('created_at',{ascending:false});$('amountTimeline').innerHTML=(al||[]).length?(al||[]).map(x=>`<div class="timeline-row"><time>${fmtDate(x.created_at)}</time><span>${x.note||'투자금 변경'}</span><strong>${Number(x.delta)>=0?'+':''}${money(x.delta)}</strong></div>`).join(''):'<div class="empty">투자금 변경 기록이 없습니다.</div>'}
+function drawChart(values){const c=$('profitChart'),ctx=c.getContext('2d');const dpr=window.devicePixelRatio||1,w=c.clientWidth||920,h=c.clientHeight||180;c.width=w*dpr;c.height=h*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);ctx.strokeStyle='#292d33';ctx.lineWidth=1;for(let y=20;y<h;y+=(h-30)/3){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}if(!values||values.length<2)values=[0,0];let min=Math.min(...values),max=Math.max(...values);if(max===min){max+=1;min-=1}const pad=12,step=(w-pad*2)/(values.length-1);ctx.beginPath();values.forEach((v,n)=>{const x=pad+n*step,y=pad+(max-v)/(max-min)*(h-pad*2);n?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.strokeStyle='#e0ad47';ctx.lineWidth=2.8;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke()}
+function fillAccount(){if(!userRow)return;const amount=investments.reduce((s,x)=>s+Number(x.amount||0),0),profit=investments.reduce((s,x)=>s+Number(x.realized_amount||0),0);$('acctName').textContent=userRow.name||'-';$('acctUsername').textContent=userRow.username||'-';$('acctPhone').textContent=userRow.phone||'-';$('acctAmount').textContent=money(amount);$('acctProfit').textContent=(profit>=0?'+':'')+money(profit)}
+let channel=null;function subscribeRealtime(){if(!userRow||channel)return;channel=sb.channel('multi-invest-user-'+userRow.id).on('postgres_changes',{event:'*',schema:'public',table:'app_investments',filter:`user_id=eq.${userRow.id}`},scheduleReload).on('postgres_changes',{event:'INSERT',schema:'public',table:'app_profit_logs',filter:`user_id=eq.${userRow.id}`},scheduleReload).on('postgres_changes',{event:'*',schema:'public',table:'app_market_5m'},()=>loadMarketPulse()).subscribe()}function scheduleReload(){clearTimeout(reloadTimer);reloadTimer=setTimeout(()=>loadAll(true).catch(console.error),450)}
+$('btnRenameInvestment').onclick=()=>{if(selectedId)editInvestmentName(selectedId)};$('filterRunning').onclick=()=>{filterMode='running';$('filterRunning').classList.add('active');$('filterDone').classList.remove('active');renderSelector()};$('filterDone').onclick=()=>{filterMode='done';$('filterDone').classList.add('active');$('filterRunning').classList.remove('active');renderSelector()};$('toggleToday').onclick=()=>{profitMode='today';$('toggleToday').classList.add('active');$('toggleTotal').classList.remove('active');renderSelected()};$('toggleTotal').onclick=()=>{profitMode='total';$('toggleTotal').classList.add('active');$('toggleToday').classList.remove('active');renderSelected()};$('tabStatus').onclick=()=>setTab('status');$('tabIntro').onclick=()=>setTab('intro');$('tabAccount').onclick=()=>setTab('account');$('btnLogout').onclick=()=>window.aiProcessor.logout('../user/index.html');$('btnSettings').onclick=()=>$('settingsModal').classList.add('on');$('btnSettingsClose').onclick=()=>$('settingsModal').classList.remove('on');$('btnSettingsSave').onclick=async()=>{const pw=$('editPw').value.trim();if(!pw)return $('settingsModal').classList.remove('on');const {error}=await sb.from('app_users').update({password_hash:pw,updated_at:new Date().toISOString()}).eq('id',userRow.id);if(error)return alert('저장 중 오류가 발생했습니다.');$('editPw').value='';$('settingsModal').classList.remove('on');alert('비밀번호가 변경되었습니다.')};
+window.addEventListener('resize',()=>{const i=investments.find(x=>x.id===selectedId);if(i)loadInvestmentLogs(i)});document.addEventListener('DOMContentLoaded',()=>{if(!requireLogin())return;loadAll(false).catch(e=>{console.error(e);alert('데이터를 불러오지 못했습니다. SQL 설치 여부를 확인해주세요.')});setInterval(()=>{if(!$('sectionStatus').classList.contains('hidden'))renderSelected()},30000);setInterval(()=>{if(!$('sectionStatus').classList.contains('hidden'))loadMarketPulse()},300000)});
+
+</script>
+</body>
+</html>

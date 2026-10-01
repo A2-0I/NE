@@ -1,0 +1,12 @@
+{
+  "cleanUrls": false,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/home", "destination": "/vip/index.html" },
+    { "source": "/chat", "destination": "/vip/chat.html" },
+    { "source": "/events", "destination": "/vip/events.html" },
+    { "source": "/process", "destination": "/vip/process.html" },
+    { "source": "/support", "destination": "/vip/support.html" },
+    { "source": "/profile", "destination": "/vip/profile.html" }
+  ]
+}

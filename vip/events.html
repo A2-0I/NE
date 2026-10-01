@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>이벤트 · AI 프로세스 VIP</title><link rel="stylesheet" href="../shared/vip.css?v=20260929-2"><link rel="stylesheet" href="../shared/vip-signature.css?v=20260929-1"><link rel="stylesheet" href="../shared/vip-premium-v3.css?v=20260929-3"><link rel="stylesheet" href="../shared/vip-v4.css?v=20260930-1"><link rel="stylesheet" href="../shared/vip-final.css?v=20260930-final3"></head><body class="vip-page page-events">
+<div class="vip-shell">
+<aside class="vip-side">
+  <div class="vip-brand">
+    <span class="crown">♛</span>
+    <strong>AI 프로세스 VIP</strong>
+    <small>PRIVATE COMMUNITY</small>
+  </div>
+  <nav class="vip-nav"><a class="" href="../home/"><span class="ico">01</span><span>홈</span></a><a class="" href="../chat/"><span class="ico">02</span><span>그룹채팅</span></a><a class="" href="../support/"><span class="ico">03</span><span>1:1 문의</span><span data-support-badge class="nav-badge hidden"></span></a><a class="active" href="../events/"><span class="ico">04</span><span>이벤트</span></a><a class="" href="../process/"><span class="ico">05</span><span>AI 프로세스</span></a><a class="" href="../profile/"><span class="ico">06</span><span>프로필 / 알림</span></a></nav>
+  <div class="vip-side-bottom">
+    <div class="vip-promo">
+      <div class="promo-pet"><img src="../shared/avatars-v4/otter.jpg" alt=""></div>
+      <strong>함께 성장하는<br>더 특별한 오늘</strong>
+      <small>편안하게 소통하고<br>필요한 정보만 가까이.</small>
+    </div>
+    <nav class="vip-nav"><button class="vip-logout" data-vip-logout><span class="ico">OUT</span><span>로그아웃</span></button></nav>
+  </div>
+</aside><main class="vip-main">
+<header class="mobile-vip-head">
+  <div class="mobile-brand-row">
+    <a class="mobile-brand-copy" href="../home/"><small>VIP PRIVATE COMMUNITY</small><strong>AI PROCESS VIP</strong></a>
+    <button class="mobile-logout" data-vip-logout type="button">로그아웃</button>
+  </div>
+  <nav class="mobile-core-nav"><a class="mobile-core-tab " href="../chat/"><span class="mobile-tab-dot"></span>그룹채팅</a><a class="mobile-core-tab active" href="../events/"><span class="mobile-tab-dot"></span>이벤트</a><a class="mobile-core-tab " href="../process/"><span class="mobile-tab-dot"></span>AI프로세스</a><a class="mobile-core-tab " href="../support/"><span class="mobile-tab-dot"></span>1:1 문의</a></nav>
+  <div class="mobile-profile-strip">
+    <a class="mobile-profile-avatar-link" href="../profile/" aria-label="프로필 변경">
+      <div data-mobile-avatar class="vip-avatar compact"></div>
+    </a>
+    <div class="mobile-profile-copy"><small><span class="online-pip"></span> 온라인</small><strong data-mobile-nickname>VIP MEMBER</strong></div>
+    <div class="mobile-member-count"><span>MEMBERS</span><strong data-vip-member-count>0명</strong></div>
+  </div>
+</header>
+  <section class="vip-hero"><div><div class="hero-kicker">VIP EVENT</div><h1>이벤트</h1><p>진행중인 이벤트에 참여하고 결과를 확인합니다.</p></div><div class="hero-mark">EVENT</div></section>
+  <section id="eventSpotlight" class="event-v4-spotlight hidden"></section>
+  <div class="vip-top"><div><h1 style="font-size:18px">진행중 · 종료 이벤트</h1><p>참여 가능한 이벤트부터 최근 순서로 표시됩니다.</p></div><button id="btnNotify" class="vip-btn gold">이벤트 알림 허용</button></div>
+  <div id="events" class="vip-event-grid"></div>
+</main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../shared/config.js?v=20260929-2"></script>
+<script src="../shared/sb.js?v=20260929-2"></script>
+<script src="../shared/app.js?v=20260929-2"></script>
+<script src="../shared/vip-push-config.js?v=20260929-2"></script>
+<script src="../shared/vip.js?v=20260930-avatar50"></script>
+<script src="../shared/vip-notify.js?v=20260929-2"></script>
+
+<script>
+const user=AIVIP.requireUser(),sb=AIVIP.sb();let entries=new Set(),winners=new Set();
+async function load(){
+ const [ev,en,win]=await Promise.all([
+  sb.from('vip_events').select('*,vip_event_entries(count),vip_event_winners(count)').order('created_at',{ascending:false}),
+  sb.from('vip_event_entries').select('event_id').eq('user_id',user.id),
+  sb.from('vip_event_winners').select('event_id').eq('user_id',user.id)
+ ]);if(ev.error)throw ev.error;entries=new Set((en.data||[]).map(x=>x.event_id));winners=new Set((win.data||[]).map(x=>x.event_id));
+ const now=Date.now();
+ const rows=ev.data||[];
+ const spotlight=document.getElementById('eventSpotlight');
+ const liveEvent=rows.find(e=>{const st=e.starts_at?new Date(e.starts_at).getTime():0,en=e.ends_at?new Date(e.ends_at).getTime():null;return e.status!=='종료'&&st<=now&&(!en||en>now)});
+ const nextEvent=liveEvent||rows.filter(e=>e.status!=='종료'&&e.starts_at&&new Date(e.starts_at).getTime()>now).sort((a,b)=>new Date(a.starts_at)-new Date(b.starts_at))[0];
+ if(nextEvent){
+   const isLive=nextEvent===liveEvent;
+   spotlight.classList.remove('hidden');
+   spotlight.innerHTML=`<div class="event-v4-kicker"><span>${isLive?'● LIVE':'UP NEXT'}</span><b>${isLive?(nextEvent.ends_at?AIVIP.clock(nextEvent.ends_at)+'까지':'진행중'):(nextEvent.starts_at?AIVIP.clock(nextEvent.starts_at)+' 시작':'예정')}</b></div><div class="event-v4-main"><div class="event-v4-icon">${isLive?'🎯':'🎁'}</div><div><small>${isLive?'현재 참여 가능':'다음 이벤트'}</small><h2>${AIVIP.escape(nextEvent.title)}</h2><p>${AIVIP.escape(nextEvent.description||'VIP 이벤트가 준비되어 있습니다.')}</p></div></div><div class="event-v4-guide"><b>진행 안내</b><span>${isLive?'현재 이벤트에 참여할 수 있습니다. 종료 전에 참여를 완료해주세요.':'시작 시간이 되면 참여 버튼이 활성화됩니다.'}</span></div><a class="event-v4-cta" href="#event-${nextEvent.id}">${isLive?'지금 참여하기':'일정 확인하기'} <span>→</span></a>`;
+ }else{spotlight.classList.add('hidden')}
+ document.getElementById('events').innerHTML=rows.length?rows.map((e,idx)=>{
+   const start=e.starts_at?new Date(e.starts_at).getTime():0,end=e.ends_at?new Date(e.ends_at).getTime():null;
+   const state=e.status==='종료'||(end&&end<=now)?'ended':start>now?'next':'live';
+   const label=state==='live'?'진행중':state==='next'?'예정':'종료';
+   const when=state==='next'?`시작 ${AIVIP.time(e.starts_at)}`:state==='live'?`마감 ${AIVIP.time(e.ends_at)}`:`종료 ${AIVIP.time(e.ends_at)}`;
+   const action=winners.has(e.id)?'<span class="vip-pill">당첨 완료</span>':entries.has(e.id)?'<span class="vip-pill">참여 완료</span>':state==='live'?`<button class="vip-btn gold" onclick="joinEvent('${e.id}')">이벤트 참여하기</button>`:state==='next'?'<span class="event-wait">시작 대기</span>':'<span class="event-wait">종료된 이벤트</span>';
+   return `<article id="event-${e.id}" class="vip-card event-card" data-state="${state}"><div class="event-card-top"><div><small>VIP EVENT ${String(idx+1).padStart(2,'0')}</small><span class="vip-pill">${label}</span></div><b>${state==='live'?'LIVE':state==='next'?'NEXT':'DONE'}</b></div><h3>${AIVIP.escape(e.title)}</h3><p>${AIVIP.escape(e.description||'이벤트 상세 안내를 확인하고 참여해주세요.')}</p><div class="event-guide"><small>EVENT GUIDE</small><span>${state==='live'?'현재 참여 가능한 이벤트입니다.':state==='next'?'시작 시간이 되면 자동으로 참여할 수 있습니다.':'이 이벤트는 종료되었습니다.'}</span></div><div class="event-meta"><span>${when}</span><span>당첨 ${e.winner_count}명</span><span>참여 ${e.vip_event_entries?.[0]?.count||0}명</span></div><div class="event-actions">${action}</div></article>`;
+ }).join(''):'<div class="vip-card vip-empty">등록된 이벤트가 없습니다.</div>';
+}
+window.joinEvent=async id=>{const r=await sb.from('vip_event_entries').insert({event_id:id,user_id:user.id});if(r.error&&r.error.code!=='23505')return alert(r.error.message);await load()};
+document.getElementById('btnNotify').onclick=async()=>{const p=await AIVIPNotify.requestPermission();alert(p==='granted'?'이벤트 알림이 허용되었습니다.':'브라우저 알림 권한을 확인해주세요.')};
+load().catch(e=>alert('VIP 설정을 확인해주세요. · '+e.message));
+</script></body></html>
